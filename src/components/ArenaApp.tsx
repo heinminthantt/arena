@@ -9,8 +9,9 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
-  Api, CARDS, ICONIMG, PAGES, QUIZ, STORAGE_KEY, T,
-  freshState, pwScore,
+  Api, BADGES, CARDS, ICONIMG, PAGES, QUIZ, STORAGE_KEY, T, XP,
+  freshState, migrateState, pwScore, rankFor, syncBadges,
+  xpFlat, xpForCorrect, xpForWrong,
   type ArenaState, type Lang,
 } from "@/lib/content";
 import Hills from "@/components/Hills";
@@ -35,15 +36,18 @@ export default function ArenaApp() {
   const [askInput, setAskInput] = useState("");
   const [roastOut, setRoastOut] = useState<{ roast: string; tip: string; score: number } | null>(null);
 
-  /* load once from localStorage, exactly like the demo */
+  /* game layer: level-up celebration (transient; the rank itself lives in state) */
+  const [celeb, setCeleb] = useState<number | null>(null);
+  const prevRank = useRef<number | null>(null);
+
+  /* load once from localStorage, exactly like the demo, but folded through
+     migrateState so saves from before the game layer gain the new fields
+     (XP, streak, badges) without losing a single record */
   useEffect(() => {
     let initial = freshState();
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as ArenaState;
-        if (parsed && parsed.scam) initial = parsed;
-      }
+      if (raw) initial = migrateState(JSON.parse(raw));
     } catch { /* keep fresh state */ }
     loaded.current = true;
     setS(initial);
@@ -54,6 +58,17 @@ export default function ArenaApp() {
     if (S && loaded.current) {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S)); } catch { /* storage full/blocked */ }
     }
+  }, [S]);
+
+  /* level-up watcher: the first sighting after load just sets the baseline
+     (a migrated save may already sit at a high rank); only a genuine
+     crossing during play opens the celebration */
+  useEffect(() => {
+    if (!S) return;
+    const idx = rankFor(S.game.xp).index;
+    if (prevRank.current === null) { prevRank.current = idx; return; }
+    if (idx > prevRank.current) setCeleb(idx);
+    prevRank.current = idx;
   }, [S]);
 
   if (!S) {
@@ -83,6 +98,18 @@ export default function ArenaApp() {
 
   const bumpUsage = (u: { input: number; output: number }) =>
     mut(d => { d.usage.calls += 1; d.usage.tokens += u.input + u.output; });
+
+  /* game layer helpers, used inside the same mut() drafts as the score
+     events so XP, streak and badges land in the same save as the score */
+  const logXp = (d: ArenaState, gained: number, what: string) => {
+    if (gained > 0) log(d, "game", "xp +" + gained, what);
+  };
+  const logBadges = (d: ArenaState) => {
+    for (const id of syncBadges(d)) {
+      const b = BADGES.find(x => x.id === id);
+      log(d, "game", "badge earned", b ? b.en : id);
+    }
+  };
 
   const go = (page: string) => {
     mut(d => { d.page = page; });
@@ -213,6 +240,105 @@ export default function ArenaApp() {
           </div>
         </div>
 
+        {/* Journey map: the trail up the hill, stops mirror the real records */}
+        {(() => {
+          type StopState = "todo" | "doing" | "done";
+          const stopState = (id: string): StopState => {
+            if (id === "scam") {
+              const n = Object.keys(S.scam.revealed).length;
+              return n === 0 ? "todo" : n >= CARDS.length ? "done" : "doing";
+            }
+            if (id === "vault") {
+              const w = [0, 1, 2].filter(l => S.vault.won[l]).length;
+              return w >= 3 ? "done" : (S.vault.log.length > 0 || w > 0) ? "doing" : "todo";
+            }
+            if (id === "roast") {
+              return S.roast.history.some(h => h.score >= 3) ? "done"
+                : S.roast.history.length > 0 ? "doing" : "todo";
+            }
+            if (id === "ask") return S.ask.history.length > 0 ? "done" : "todo";
+            if (id === "quiz") {
+              const n = Object.keys(S.quiz.answers).length;
+              return n === 0 ? "todo" : n >= QUIZ.length ? "done" : "doing";
+            }
+            return "todo";
+          };
+          const stops: { id: string; x: number; y: number; boss?: boolean }[] = [
+            { id: "start", x: 5, y: 60 },
+            { id: "scam", x: 22, y: 28 },
+            { id: "vault", x: 39, y: 53 },
+            { id: "roast", x: 56, y: 26 },
+            { id: "ask", x: 72, y: 51 },
+            { id: "quiz", x: 89, y: 31, boss: true },
+          ];
+          const stateChip = (st: StopState) =>
+            st === "done" ? "bg-pastel-mint" : st === "doing" ? "bg-sun" : "bg-white/85";
+          const stateText = (st: StopState) =>
+            st === "done" ? t("stateDone") : st === "doing" ? t("stateDoing") : t("stateTodo");
+          return (
+            <div className="sticker relative mb-6 overflow-hidden">
+              <div className="bg-gradient-to-b from-pastel-sky/70 via-cream to-cream px-8 pb-4 pt-7">
+                <h3 className="headline text-[38px]">🗺️ {t("journey")}</h3>
+                <p className="mt-1 max-w-4xl text-[20px] leading-relaxed text-ink-soft">{t("journeySub")}</p>
+              </div>
+              <div className="relative h-[360px]">
+                <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
+                  <path
+                    d="M 60 180 C 150 78, 190 84, 264 84 C 340 84, 390 168, 468 168 C 550 168, 590 72, 672 78 C 750 84, 790 162, 864 159 C 950 155, 990 66, 1068 72"
+                    fill="none" stroke="#b08968" strokeWidth="7" strokeLinecap="round" strokeDasharray="1 18" opacity="0.65"
+                  />
+                </svg>
+                <Hills className="absolute bottom-0 left-0 h-[74px] w-full opacity-70" />
+                {stops.map(stop => {
+                  const isStart = stop.id === "start";
+                  const st: StopState = isStart ? "done" : stopState(stop.id);
+                  const size = stop.boss ? 118 : 92;
+                  return (
+                    <button
+                      key={stop.id}
+                      onClick={() => (isStart ? window.scrollTo(0, 0) : go(stop.id))}
+                      className="group absolute flex w-[168px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5 active:scale-95"
+                      style={{ left: stop.x + "%", top: stop.y + "%" }}
+                      aria-label={isStart ? t("stopStart") : t(stop.id)}
+                    >
+                      {stop.boss ? (
+                        <span className="rounded-md bg-pin px-3 py-1 text-[15px] font-black tracking-widest text-white shadow" style={{ transform: "rotate(-5deg)" }}>
+                          👑 {t("stopBoss")}
+                        </span>
+                      ) : null}
+                      <span
+                        className={`relative flex items-center justify-center rounded-full border-4 border-white shadow-[0_10px_24px_rgba(0,0,0,0.18)] transition-transform group-hover:-translate-y-1 ${
+                          stop.boss ? "bg-pastel-lilac" : st === "done" ? "bg-leaf" : st === "doing" ? "bg-sun" : "bg-white"
+                        }`}
+                        style={{ width: size, height: size, minWidth: 72, minHeight: 72 }}
+                      >
+                        {isStart ? (
+                          <span className="text-[40px]">🚩</span>
+                        ) : ICONIMG[stop.id] ? (
+                          <Image src={ICONIMG[stop.id]} alt="" width={stop.boss ? 74 : 56} height={stop.boss ? 74 : 56} className="object-contain" />
+                        ) : (
+                          <span className="text-[36px]">⭐</span>
+                        )}
+                        {st === "done" && !isStart ? (
+                          <span className="absolute -right-1 -top-1 flex h-9 w-9 items-center justify-center rounded-full bg-leaf-deep text-[19px] font-black text-white shadow">✓</span>
+                        ) : null}
+                      </span>
+                      <span className="rounded-full bg-white/90 px-3.5 py-1 text-center text-[17px] font-extrabold leading-tight shadow-sm">
+                        {isStart ? t("stopStart") : t(stop.id)}
+                      </span>
+                      {!isStart ? (
+                        <span className={`rounded-full px-3 py-0.5 text-[14px] font-extrabold ${stateChip(st)}`}>
+                          {stateText(st)}
+                        </span>
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
+
         <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-5">
           {PAGES.filter(p => p.id !== "home").map((p, idx) => (
             <button
@@ -252,10 +378,18 @@ export default function ArenaApp() {
       mut(d => {
         const aiRight = (r.verdict === "scam") === c.isScam;
         const classRight = d.scam.vote ? ((d.scam.vote === "scam") === c.isScam) : null;
+        const firstReveal = !d.scam.revealed[i];
         if (aiRight) d.scores.ai += 1;
         if (classRight) d.scores.students += 1;
         d.scam.revealed[i] = { verdict: r.verdict!, flags: r.flags!, aiRight, classRight, classVote: d.scam.vote };
         log(d, "scam", "AI reveal", "Card " + (i + 1) + ": " + r.verdict + (aiRight ? " (AI +1)" : "") + (classRight ? " (Students +1)" : ""));
+        /* game layer: XP and streak ride on the class call, first reveal
+           only, so re-asking the AI on an old card cannot farm points */
+        if (firstReveal) {
+          if (classRight === true) logXp(d, xpForCorrect(d, XP.scamCorrect), "Scam or Safe card " + (i + 1) + " correct");
+          else if (classRight === false) xpForWrong(d);
+          logBadges(d);
+        }
       });
       setScamBusy(false);
     };
@@ -329,9 +463,12 @@ export default function ArenaApp() {
       mut(d => {
         d.vault.attemptsLeft -= 1;
         d.vault.log.push({ level: v.level, attempt, reply: r.reply!, won: !!r.won });
+        const firstWin = !!r.won && !d.vault.won[v.level];
         if (r.won && !d.vault.won[v.level]) { d.vault.won[v.level] = true; d.scores.students += 1; }
         if (!r.won && d.vault.attemptsLeft === 0 && !d.vault.won[v.level]) { d.scores.ai += 1; }
         log(d, "vault", r.won ? "student win" : "attempt", "Level " + (v.level + 1) + ": " + attempt);
+        if (firstWin) logXp(d, xpFlat(d, XP.vaultWin), "Hack the Bot level " + (v.level + 1) + " cleared");
+        logBadges(d);
       });
       setVaultInput("");
       setVaultBusy(false);
@@ -394,6 +531,9 @@ export default function ArenaApp() {
       mut(d => {
         d.roast.history.unshift({ masked, score, roast: r.roast!, time: now() });
         log(d, "roast", "password checked", masked + " score " + score + "/4");
+        /* only the masked form and the score are stored, never the password */
+        logXp(d, xpFlat(d, XP.roastByScore[score]), "Password Roast score " + score + "/4");
+        logBadges(d);
       });
       setRoastOut({ roast: r.roast!, tip: r.tip!, score });
       setPwInput("");
@@ -471,6 +611,8 @@ export default function ArenaApp() {
       mut(d => {
         d.ask.history.unshift({ q, a: r.answer!, source: r.source, time: now() });
         log(d, "ask", "question answered", q);
+        logXp(d, xpFlat(d, XP.askQuestion), "Ask the Hacker question");
+        logBadges(d);
       });
       setAskInput("");
       setAskBusy(false);
@@ -524,9 +666,30 @@ export default function ArenaApp() {
     const rank = answered === total ? (correct >= 7 ? "Guardian 🏆" : correct >= 5 ? "Defender 🛡" : "Rookie 🌱") : "";
     const i = S.quiz.index, q = QUIZ[i], picked = S.quiz.answers[i];
     const opts = lang === "my" ? q.optsMy : q.optsEn;
+    const warmedUp = Object.keys(S.scam.revealed).length > 0 && S.vault.log.length > 0 &&
+      S.roast.history.length > 0 && S.ask.history.length > 0;
     return (
       <>
-        {pageHead("🏆", "quiz", "quizSub")}
+        {/* Boss framing: the quiz is the final boss of the journey.
+            The note below is a SOFT gate only; it never blocks anything. */}
+        <div className="sticker relative mb-6 overflow-hidden bg-gradient-to-br from-pastel-lilac via-[#ded2fb] to-pastel-sky p-8">
+          <span className="absolute right-7 top-6 rounded-md bg-pin px-4 py-1.5 text-[17px] font-black tracking-widest text-white shadow"
+            style={{ transform: "rotate(4deg)" }}>
+            👑 {t("stopBoss")}
+          </span>
+          <div className="flex flex-wrap items-center gap-6">
+            <Image src="/assets/asset-trophy.webp" alt="" width={110} height={110} className="h-[110px] w-[110px] object-contain" />
+            <div className="min-w-[300px] flex-1">
+              <h2 className="headline text-[52px]">{t("bossHead")}</h2>
+              <p className="mt-2 max-w-4xl text-[23px] leading-relaxed text-ink/75">{t("quizSub")}</p>
+            </div>
+          </div>
+          {!warmedUp ? (
+            <div className="mt-5 rounded-3xl bg-white/80 px-6 py-4 text-[21px] font-bold leading-relaxed">
+              💡 {t("bossNote")}
+            </div>
+          ) : null}
+        </div>
         {dots(total, i, d => S.quiz.answers[d] !== undefined,
           d => mut(dd => { dd.quiz.index = d; }), "Question")}
         <div className="relative">
@@ -549,6 +712,9 @@ export default function ArenaApp() {
                       d.quiz.answers[i] = oi;
                       if (right) d.scores.students += 1;
                       log(d, "quiz", right ? "correct" : "wrong", "Q" + (i + 1));
+                      if (right) logXp(d, xpForCorrect(d, XP.quizCorrect), "Finale Quiz Q" + (i + 1) + " correct");
+                      else xpForWrong(d);
+                      logBadges(d);
                     })}
                     className={`min-h-[76px] rounded-full px-8 text-[24px] font-extrabold shadow-[0_8px_20px_rgba(0,0,0,0.10)] active:scale-[.97] disabled:opacity-90 ${cls}`}>
                     {o}
@@ -599,6 +765,46 @@ export default function ArenaApp() {
             className="min-h-[76px] rounded-full bg-ink px-9 text-[25px] font-extrabold text-cream shadow-[0_8px_20px_rgba(0,0,0,0.15)] active:scale-[.97]">
             {t("exportBtn")}
           </button>
+        </div>
+
+        {/* Badge shelf: earned badges in colour, the rest waiting in grey */}
+        <div className="relative mb-8">
+          <span className="pushpin" />
+          <div className="sticker p-7">
+            <h3 className="text-[30px] font-extrabold">🏅 {t("badges")}</h3>
+            <p className="mb-5 mt-1 text-[20px] leading-relaxed text-ink-soft">{t("badgesSub")}</p>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
+              {BADGES.map((b, bi) => {
+                const has = !!S.game.badges[b.id];
+                return (
+                  <div
+                    key={b.id}
+                    className="flex items-center gap-4 rounded-3xl px-5 py-4"
+                    style={{
+                      background: has ? PASTELS[bi % PASTELS.length] : "#f1eee2",
+                      opacity: has ? 1 : 0.75,
+                    }}
+                  >
+                    <span
+                      className="flex h-[76px] w-[76px] shrink-0 items-center justify-center rounded-full border-[3px] border-dashed border-ink/25 bg-white text-[36px] shadow"
+                      style={has ? undefined : { filter: "grayscale(1)" }}
+                    >
+                      {b.icon}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="text-[23px] font-extrabold leading-tight">{b.en}</div>
+                      <div className="text-[18px] leading-snug text-ink/70">
+                        {lang === "my" ? b.descMy : b.descEn}
+                      </div>
+                      <div className={`mt-1 inline-block rounded-full px-3 py-0.5 text-[15px] font-extrabold ${has ? "bg-white/85" : "bg-white/60 text-ink-soft"}`}>
+                        {has ? t("earned") : "🔒 " + t("locked")}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
         <div className="relative">
           <span className="tape" />
@@ -727,6 +933,45 @@ export default function ArenaApp() {
           </div>
         </div>
 
+        {/* Game layer: rank, Shield Points bar and streak, visible everywhere */}
+        {(() => {
+          const rf = rankFor(S.game.xp);
+          const pct = rf.next ? Math.min(100, Math.round((rf.into / rf.span) * 100)) : 100;
+          return (
+            <div className="sticker mb-6 flex flex-wrap items-center gap-5 px-6 py-4">
+              <div className="stamp-badge flex h-[84px] w-[84px] shrink-0 flex-col items-center justify-center rounded-full border-4 border-dashed border-ink/25 bg-sun text-center shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
+                <span className="text-[34px] leading-none">{rf.rank.icon}</span>
+              </div>
+              <div className="min-w-[300px] flex-1">
+                <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                  <span className="text-[28px] font-black">{lang === "my" ? rf.rank.my : rf.rank.en}</span>
+                  <span className="text-[21px] font-bold text-ink-soft">
+                    🛡 {S.game.xp} {t("shieldPoints")}
+                  </span>
+                  {S.game.streak >= 2 ? (
+                    <span className="rounded-full bg-[#ffe3c2] px-4 py-1.5 text-[19px] font-extrabold text-[#9a4d00]">
+                      🔥 {t("streak")} ×{S.game.streak}
+                    </span>
+                  ) : null}
+                  {S.game.bestStreak >= 3 ? (
+                    <span className="rounded-full bg-cream px-4 py-1.5 text-[17px] font-extrabold text-ink-soft">
+                      {t("bestStreak")} 🔥 ×{S.game.bestStreak}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="mt-2.5 h-[22px] overflow-hidden rounded-full border border-paper-line bg-cream-deep">
+                  <div className="xp-fill h-full rounded-full" style={{ width: pct + "%" }} />
+                </div>
+                <div className="mt-1.5 text-[17px] font-bold text-ink-soft">
+                  {rf.next
+                    ? <>{rf.next.at - S.game.xp} {t("xpToNext")}: {lang === "my" ? rf.next.my : rf.next.en}</>
+                    : <>{t("maxRank")} 👑</>}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         {(pages[S.page] || renderHome)()}
 
         <div className="relative mt-10 overflow-hidden rounded-[26px] shadow-[0_10px_28px_rgba(0,0,0,0.10)]">
@@ -737,6 +982,47 @@ export default function ArenaApp() {
           </div>
         </div>
       </main>
+
+      {/* Level-up celebration: scrapbook stamp + paper confetti, one big tap away */}
+      {celeb !== null ? (() => {
+        const r = rankFor(S.game.xp);
+        const confetti = ["#f5b8d0", "#bfe3f5", "#c8f0d8", "#fff3b0", "#c2b3f3", "#c0e83d"];
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/45 p-6" role="dialog" aria-modal="true">
+            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+              {Array.from({ length: 28 }, (_, ci) => (
+                <span
+                  key={ci}
+                  className="confetti-bit"
+                  style={{
+                    left: (ci * 37) % 100 + "%",
+                    background: confetti[ci % confetti.length],
+                    animationDelay: (ci % 7) * 0.35 + "s",
+                    borderRadius: ci % 3 === 0 ? "50%" : "3px",
+                  }}
+                />
+              ))}
+            </div>
+            <div className="sticker celeb-pop relative w-full max-w-[620px] p-10 text-center">
+              <span className="tape" />
+              <div className="text-[26px] font-black uppercase tracking-widest text-ink-soft">{t("levelUp")}</div>
+              <div className="stamp-in mx-auto mt-6 flex h-[190px] w-[190px] flex-col items-center justify-center rounded-full border-[6px] border-dashed border-ink/30 bg-sun shadow-[0_14px_34px_rgba(0,0,0,0.22)]">
+                <span className="text-[84px] leading-none">{r.rank.icon}</span>
+                <span className="mt-2 px-3 text-[21px] font-black leading-tight">{lang === "my" ? r.rank.my : r.rank.en}</span>
+              </div>
+              <div className="mt-6 text-[24px] font-bold text-ink-soft">
+                {t("newRank")} · 🛡 {S.game.xp} {t("shieldPoints")}
+              </div>
+              <button
+                onClick={() => setCeleb(null)}
+                className="mt-8 min-h-[84px] w-full rounded-full bg-ink px-9 text-[27px] font-extrabold text-cream shadow-[0_10px_24px_rgba(0,0,0,0.20)] active:scale-[.97]"
+              >
+                {t("tapContinue")} →
+              </button>
+            </div>
+          </div>
+        );
+      })() : null}
     </div>
   );
 }

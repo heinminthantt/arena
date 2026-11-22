@@ -22,7 +22,16 @@ export const T: Record<Lang, Record<string, string>> = {
     redFlags:"Red flags", whySafe:"Why it looks safe", tryIt:"Try an attempt", send:"Send",
     attemptsLeft:"attempts left", level:"Level", checkPw:"Check password", askQ:"Ask a question",
     exportBtn:"Download records (JSON)", clearBtn:"Clear records on this page view",
-    finalRank:"Final rank", playAgain:"This page record" },
+    finalRank:"Final rank", playAgain:"This page record",
+    shieldPoints:"Shield Points", streak:"Streak", bestStreak:"Best",
+    xpToNext:"XP to next rank", maxRank:"Top rank reached",
+    levelUp:"Level up!", newRank:"New rank", tapContinue:"Tap to continue",
+    journey:"The Journey", journeySub:"Follow the trail up the hill. Every stop you clear earns Shield Points. Tap any stop to play it. Nothing is locked, the trail just shows the way.",
+    stopStart:"Start", stopBoss:"FINAL BOSS",
+    stateTodo:"Not started", stateDoing:"In progress", stateDone:"Cleared ✓",
+    bossHead:"Final Boss: the Finale Quiz", bossNote:"Tip: the class has not tried every stop yet. Warm up on the trail first if you like, or take on the boss right now. Your call.",
+    badges:"Badge Shelf", badgesSub:"Badges the class has earned on this device. Grey ones are still waiting to be won.",
+    earned:"Earned ✓", locked:"Not yet" },
   my: { students:"ကျောင်းသားများ", usage:"Demo ခေါ်ဆိုမှု", tokens:"ခန့်မှန်း တိုကင်",
     home:"ပင်မ", scam:"လိမ်လည်မှုလား၊ လုံခြုံလား?", vault:"ဘော့ကို လှည့်စားကြည့်ပါ", roast:"စကားဝှက် စစ်ဆေးခန်း",
     ask:"ဟက်ကာကို မေးကြည့်ပါ", quiz:"နောက်ဆုံး ပဟေဠိ", records:"မှတ်တမ်းများ",
@@ -38,7 +47,16 @@ export const T: Record<Lang, Record<string, string>> = {
     redFlags:"သံသယဖြစ်ဖွယ် လက္ခဏာများ", whySafe:"ဘာကြောင့် လုံခြုံပုံ ရသလဲ", tryIt:"ကြိုးစားကြည့်ပါ", send:"ပို့မယ်",
     attemptsLeft:"ကြိမ်ကျန်", level:"အဆင့်", checkPw:"စကားဝှက် စစ်မယ်", askQ:"မေးခွန်း မေးမယ်",
     exportBtn:"မှတ်တမ်း ဒေါင်းလုဒ် (JSON)", clearBtn:"ဒီမြင်ကွင်း မှတ်တမ်း ရှင်းမယ်",
-    finalRank:"နောက်ဆုံး အဆင့်", playAgain:"ဒီစာမျက်နှာ မှတ်တမ်း" }
+    finalRank:"နောက်ဆုံး အဆင့်", playAgain:"ဒီစာမျက်နှာ မှတ်တမ်း",
+    shieldPoints:"Shield Points", streak:"ဆက်တိုက် မှန်နေတာ", bestStreak:"အကောင်းဆုံး",
+    xpToNext:"နောက်အဆင့်ထိ လိုသေးတာ", maxRank:"အမြင့်ဆုံး အဆင့် ရောက်ပြီ",
+    levelUp:"အဆင့် တက်သွားပြီ!", newRank:"အဆင့်သစ်", tapContinue:"ဆက်သွားဖို့ နှိပ်ပါ",
+    journey:"ခရီးလမ်းကြောင်း", journeySub:"တောင်ပေါ်တက်တဲ့ လမ်းကြောင်းကို လိုက်သွားပါ။ ရပ်နားစခန်း တစ်ခုချင်းစီ ပြီးရင် Shield Points ရတယ်။ ဘယ်စခန်းကိုမဆို နှိပ်ပြီး တန်းဆော့နိုင်တယ်။ ဘာမှ lock လုပ်မထားဘူး၊ လမ်းကြောင်းက လမ်းပြပေးရုံပဲ။",
+    stopStart:"အစ", stopBoss:"နောက်ဆုံး BOSS",
+    stateTodo:"မစရသေး", stateDoing:"လုပ်နေဆဲ", stateDone:"ပြီးသွားပြီ ✓",
+    bossHead:"နောက်ဆုံး Boss: နောက်ဆုံး ပဟေဠိ", bossNote:"အကြံပြုချက်: အတန်းက စခန်းတိုင်းကို မစမ်းရသေးဘူး။ အရင် လမ်းကြောင်းပေါ်မှာ နွှေးပြီးမှ လာဆော့လည်း ရတယ်၊ အခုပဲ Boss ကို တန်းရင်ဆိုင်လည်း ရတယ်။ ကြိုက်သလို ရွေးပါ။",
+    badges:"တံဆိပ် စင်တာ", badgesSub:"ဒီစက်ပေါ်မှာ အတန်း ရထားတဲ့ တံဆိပ်တွေပါ။ မီးခိုးရောင် တံဆိပ်တွေက ရဖို့ ကျန်နေသေးတယ်။",
+    earned:"ရပြီ ✓", locked:"မရသေး" }
 };
 
 /* ---------- Content: Scam or Safe cards (from the demo kit) ---------- */
@@ -248,6 +266,18 @@ export interface RoastItem { masked: string; score: number; roast: string; time:
 export interface AskItem { q: string; a: string; source: string; time: string; }
 export interface RecordItem { time: string; page: string; action: string; detail: string; }
 
+/* ---------- Progressive game layer: Shield Points, ranks, streaks, badges ----------
+   Layered ON TOP of the existing scoring. The Students vs AI numbers and
+   every per-section point rule above are untouched; XP is a parallel
+   currency awarded at the same moments score events fire. */
+
+export interface GameState {
+  xp: number;
+  streak: number;      // current run of consecutive correct scam/quiz answers
+  bestStreak: number;  // best run ever on this device
+  badges: Record<string, boolean>;
+}
+
 export interface ArenaState {
   lang: Lang; page: string;
   scores: { students: number; ai: number };
@@ -258,7 +288,101 @@ export interface ArenaState {
   ask: { history: AskItem[] };
   quiz: { index: number; answers: Record<number, number> };
   records: RecordItem[];
+  game: GameState;
 }
+
+/* The one XP table. Every award in the app comes from here. */
+export const XP = {
+  welcome: 40,               // endowed progress: fresh state starts with this, already on the bar
+  scamCorrect: 20,           // class call on a scam card matches the truth (first reveal only)
+  vaultWin: 30,              // per Hack the Bot level, first win only
+  quizCorrect: 15,           // per correct Finale Quiz answer
+  roastByScore: [0, 0, 5, 15, 25], // Password Roast, indexed by pwScore 0..4
+  askQuestion: 5,            // per Ask the Hacker question answered
+  streakBonusEvery: 3,       // every 3rd consecutive correct answer...
+  streakBonus: 10,           // ...pays this bonus on top
+} as const;
+
+export interface Rank { en: string; my: string; icon: string; at: number; }
+export const RANKS: Rank[] = [
+  { en: "Rookie",        my: "Rookie အသစ်လေး",        icon: "🌱", at: 0 },
+  { en: "Guardian",      my: "Guardian အစောင့်",       icon: "🛡️", at: 80 },
+  { en: "Defender",      my: "Defender ကာကွယ်သူ",     icon: "⚔️", at: 180 },
+  { en: "Cyber Hero",    my: "Cyber Hero",            icon: "🦸", at: 320 },
+  { en: "Shield Master", my: "Shield Master",         icon: "👑", at: 500 },
+];
+
+export function rankFor(xp: number): { index: number; rank: Rank; next: Rank | null; into: number; span: number } {
+  let index = 0;
+  for (let i = 0; i < RANKS.length; i++) if (xp >= RANKS[i].at) index = i;
+  const rank = RANKS[index];
+  const next = index + 1 < RANKS.length ? RANKS[index + 1] : null;
+  return { index, rank, next, into: xp - rank.at, span: next ? next.at - rank.at : 0 };
+}
+
+/* Award base XP for a correct scam/quiz answer and run the streak.
+   Returns total XP gained (base + any streak bonus) so callers can log it. */
+export function xpForCorrect(d: ArenaState, base: number): number {
+  d.game.streak += 1;
+  if (d.game.streak > d.game.bestStreak) d.game.bestStreak = d.game.streak;
+  let gained = base;
+  if (d.game.streak % XP.streakBonusEvery === 0) gained += XP.streakBonus;
+  d.game.xp += gained;
+  return gained;
+}
+
+/* A wrong scam/quiz answer breaks the streak. Scores are not touched here. */
+export function xpForWrong(d: ArenaState): void {
+  d.game.streak = 0;
+}
+
+/* Plain XP award with no streak involvement (vault, roast, ask). */
+export function xpFlat(d: ArenaState, amount: number): number {
+  d.game.xp += amount;
+  return amount;
+}
+
+export interface BadgeDef { id: string; icon: string; en: string; my: string; descEn: string; descMy: string; }
+export const BADGES: BadgeDef[] = [
+  { id: "first-catch", icon: "🎣", en: "First Catch", my: "First Catch",
+    descEn: "First correct Scam or Safe call by the class", descMy: "အတန်းက ပထမဆုံး မှန်အောင် ခေါ်နိုင်တာ" },
+  { id: "sharp-eye", icon: "👁️", en: "Sharp Eye", my: "Sharp Eye",
+    descEn: "All 6 scam cards judged correctly", descMy: "လိမ်ကတ် ၆ ကတ်လုံး မှန်အောင် ဆုံးဖြတ်နိုင်တာ" },
+  { id: "bot-breaker", icon: "🤖", en: "Bot Breaker", my: "Bot Breaker",
+    descEn: "All 3 Hack the Bot levels cleared", descMy: "ဘော့ အဆင့် ၃ ဆင့်လုံး နိုင်တာ" },
+  { id: "password-pro", icon: "🔑", en: "Password Pro", my: "Password Pro",
+    descEn: "A roast result in the top strength band (4/4)", descMy: "Roast မှာ အမြင့်ဆုံး အဆင့် (4/4) ရတာ" },
+  { id: "quiz-master", icon: "🏆", en: "Quiz Master", my: "Quiz Master",
+    descEn: "8 out of 8 in the Finale Quiz", descMy: "နောက်ဆုံး ပဟေဠိ ၈ ခုလုံး မှန်တာ" },
+  { id: "full-journey", icon: "🗺️", en: "Full Journey", my: "Full Journey",
+    descEn: "Every section on the trail attempted", descMy: "လမ်းကြောင်းက အပိုင်းတိုင်းကို စမ်းဖူးတာ" },
+];
+
+/* Derive badges from the existing records and mark any newly earned ones.
+   Returns the ids earned by this call so the caller can log them. Safe to
+   run on any state, including migrated saves: old records earn retroactively. */
+export function syncBadges(d: ArenaState): string[] {
+  const earned: string[] = [];
+  const give = (id: string, ok: boolean) => {
+    if (ok && !d.game.badges[id]) { d.game.badges[id] = true; earned.push(id); }
+  };
+  const revealed = Object.values(d.scam.revealed);
+  give("first-catch", revealed.some(r => r.classRight === true));
+  give("sharp-eye",
+    Object.keys(d.scam.revealed).length >= CARDS.length && revealed.every(r => r.classRight === true));
+  give("bot-breaker", [0, 1, 2].every(l => d.vault.won[l]));
+  give("password-pro", d.roast.history.some(h => h.score >= 4));
+  give("quiz-master",
+    Object.keys(d.quiz.answers).length >= QUIZ.length &&
+    Object.entries(d.quiz.answers).every(([i, a]) => a === QUIZ[Number(i)].a));
+  give("full-journey",
+    Object.keys(d.scam.revealed).length > 0 && d.vault.log.length > 0 &&
+    d.roast.history.length > 0 && d.ask.history.length > 0 &&
+    Object.keys(d.quiz.answers).length > 0);
+  return earned;
+}
+
+const freshGame = (): GameState => ({ xp: XP.welcome, streak: 0, bestStreak: 0, badges: {} });
 
 export const freshState = (): ArenaState => ({
   lang: "my", page: "home",
@@ -269,8 +393,30 @@ export const freshState = (): ArenaState => ({
   roast: { history: [] },
   ask: { history: [] },
   quiz: { index: 0, answers: {} },
-  records: []
+  records: [{
+    time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+    page: "game", action: "welcome bonus",
+    detail: "+" + XP.welcome + " Shield Points to start the journey",
+  }],
+  game: freshGame()
 });
+
+/* Migration: fold a saved record from before the game layer (or a partial
+   one) into the current shape. Existing sections are kept as saved; only
+   missing pieces get defaults, so no records are ever lost. The storage
+   key name does not change. */
+export function migrateState(parsed: Partial<ArenaState> | null): ArenaState {
+  const base = freshState();
+  if (!parsed || typeof parsed !== "object" || !parsed.scam) return base;
+  const merged: ArenaState = {
+    ...base,
+    ...parsed,
+    game: { ...base.game, ...(parsed.game ?? {}) },
+  };
+  merged.game.badges = { ...(parsed.game?.badges ?? {}) };
+  syncBadges(merged); // records from before badges existed still earn theirs
+  return merged;
+}
 
 export const PAGES = [
   { id: "home", icon: "🏠" }, { id: "scam", icon: "🃏" }, { id: "vault", icon: "🔐" },
