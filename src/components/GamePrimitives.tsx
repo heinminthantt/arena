@@ -1,1 +1,30 @@
-InVzZSBjbGllbnQiOwoKaW1wb3J0IHR5cGUgeyBSZWFjdE5vZGUgfSBmcm9tICJyZWFjdCI7CgpleHBvcnQgZnVuY3Rpb24gTWlzc2lvbkNhcmQoeyBjaGlsZHJlbiwgY2xhc3NOYW1lID0gIiIgfTogeyBjaGlsZHJlbjogUmVhY3ROb2RlOyBjbGFzc05hbWU/OiBzdHJpbmcgfSkgewogIHJldHVybiA8ZGl2IGNsYXNzTmFtZT17YHJlbGF0aXZlICR7Y2xhc3NOYW1lfWB9PjxzcGFuIGNsYXNzTmFtZT0icHVzaHBpbiIgLz48ZGl2IGNsYXNzTmFtZT0ic3RpY2tlciBwLTgiPntjaGlsZHJlbn08L2Rpdj48L2Rpdj47Cn0KCmV4cG9ydCBmdW5jdGlvbiBGZWVkYmFja1BhbmVsKHsgdGl0bGUsIGNoaWxkcmVuLCB0b25lID0gIm1pbnQiIH06IHsgdGl0bGU6IHN0cmluZzsgY2hpbGRyZW46IFJlYWN0Tm9kZTsgdG9uZT86ICJtaW50IiB8ICJza3kiIHwgImJ1dHRlciIgfSkgewogIGNvbnN0IGNvbG9ycyA9IHsgbWludDogImJnLXBhc3RlbC1taW50Iiwgc2t5OiAiYmctcGFzdGVsLXNreSIsIGJ1dHRlcjogImJnLXBhc3RlbC1idXR0ZXIiIH07CiAgcmV0dXJuIDxzZWN0aW9uIGNsYXNzTmFtZT17YG10LTUgcm91bmRlZC0zeGwgcHgtNiBweS01IHRleHQtWzIycHhdIGxlYWRpbmctcmVsYXhlZCAke2NvbG9yc1t0b25lXX1gfSBhcmlhLWxpdmU9InBvbGl0ZSI+PGgzIGNsYXNzTmFtZT0iZm9udC1ibGFjayI+e3RpdGxlfTwvaDM+PGRpdiBjbGFzc05hbWU9Im10LTIiPntjaGlsZHJlbn08L2Rpdj48L3NlY3Rpb24+Owp9CgpleHBvcnQgZnVuY3Rpb24gT2JqZWN0aXZlKHsgY2hpbGRyZW4gfTogeyBjaGlsZHJlbjogUmVhY3ROb2RlIH0pIHsKICByZXR1cm4gPGRpdiBjbGFzc05hbWU9Im1iLTUgcm91bmRlZC0yeGwgYm9yZGVyIGJvcmRlci1pbmsvMTAgYmctd2hpdGUvNzUgcHgtNSBweS00IHRleHQtWzIwcHhdIGZvbnQtYm9sZCBzaGFkb3ctc20iPjxzcGFuIGNsYXNzTmFtZT0ibXItMiB0ZXh0LWxlYWYtZGVlcCI+T0JKRUNUSVZFPC9zcGFuPntjaGlsZHJlbn08L2Rpdj47Cn0KCmV4cG9ydCBmdW5jdGlvbiBQbGF5ZXJIdWQoeyByYW5rLCB4cCwgbmV4dCwgcGN0LCBzdHJlYWssIGJlc3QsIGxhYmVsLCBzdHJlYWtMYWJlbCwgYmVzdExhYmVsLCBuZXh0TGFiZWwsIG1heExhYmVsIH06IHsKICByYW5rOiBzdHJpbmc7IHhwOiBudW1iZXI7IG5leHQ6IHN0cmluZyB8IG51bGw7IHBjdDogbnVtYmVyOyBzdHJlYWs6IG51bWJlcjsgYmVzdDogbnVtYmVyOwogIGxhYmVsOiBzdHJpbmc7IHN0cmVha0xhYmVsOiBzdHJpbmc7IGJlc3RMYWJlbDogc3RyaW5nOyBuZXh0TGFiZWw6IHN0cmluZzsgbWF4TGFiZWw6IHN0cmluZzsKfSkgewogIHJldHVybiA8ZGl2IGNsYXNzTmFtZT0ic3RpY2tlciBtYi02IGZsZXggZmxleC13cmFwIGl0ZW1zLWNlbnRlciBnYXAtNSBweC02IHB5LTQiPgogICAgPGRpdiBjbGFzc05hbWU9InN0YW1wLWJhZGdlIGZsZXggaC1bODRweF0gdy1bODRweF0gc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHJvdW5kZWQtZnVsbCBib3JkZXItNCBib3JkZXItZGFzaGVkIGJvcmRlci1pbmsvMjUgYmctc3VuIHRleHQtY2VudGVyIHRleHQtMnhsIHNoYWRvdy1bMF84cHhfMjBweF9yZ2JhKDAsMCwwLDAuMTUpXSIgYXJpYS1oaWRkZW49InRydWUiPvCfm6E8L2Rpdj4KICAgIDxkaXYgY2xhc3NOYW1lPSJtaW4tdy1bMzAwcHhdIGZsZXgtMSI+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZsZXgtd3JhcCBpdGVtcy1iYXNlbGluZSBnYXAteC00IGdhcC15LTEiPjxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMjhweF0gZm9udC1ibGFjayI+e3Jhbmt9PC9zcGFuPjxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMjFweF0gZm9udC1ib2xkIHRleHQtaW5rLXNvZnQiPvCfm6Ege3hwfSB7bGFiZWx9PC9zcGFuPntzdHJlYWsgPj0gMiA/IDxzcGFuIGNsYXNzTmFtZT0icm91bmRlZC1mdWxsIGJnLVsjZmZlM2MyXSBweC00IHB5LTEuNSB0ZXh0LVsxOXB4XSBmb250LWV4dHJhYm9sZCB0ZXh0LVsjOWE0ZDAwXSI+8J+UpSB7c3RyZWFrTGFiZWx9IMOXe3N0cmVha308L3NwYW4+IDogbnVsbH17YmVzdCA+PSAzID8gPHNwYW4gY2xhc3NOYW1lPSJyb3VuZGVkLWZ1bGwgYmctY3JlYW0gcHgtNCBweS0xLjUgdGV4dC1bMTdweF0gZm9udC1leHRyYWJvbGQgdGV4dC1pbmstc29mdCI+e2Jlc3RMYWJlbH0g8J+UpSDDl3tiZXN0fTwvc3Bhbj4gOiBudWxsfTwvZGl2PgogICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMi41IGgtWzIycHhdIG92ZXJmbG93LWhpZGRlbiByb3VuZGVkLWZ1bGwgYm9yZGVyIGJvcmRlci1wYXBlci1saW5lIGJnLWNyZWFtLWRlZXAiIHJvbGU9InByb2dyZXNzYmFyIiBhcmlhLXZhbHVlbm93PXtwY3R9IGFyaWEtdmFsdWVtaW49ezB9IGFyaWEtdmFsdWVtYXg9ezEwMH0gYXJpYS1sYWJlbD17YCR7bGFiZWx9IHByb2dyZXNzYH0+PGRpdiBjbGFzc05hbWU9InhwLWZpbGwgaC1mdWxsIHJvdW5kZWQtZnVsbCIgc3R5bGU9e3sgd2lkdGg6IGAke3BjdH0lYCB9fSAvPjwvZGl2PgogICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQtMS41IHRleHQtWzE3cHhdIGZvbnQtYm9sZCB0ZXh0LWluay1zb2Z0Ij57bmV4dCA/IDw+e25leHR9PC8+IDogPD57bWF4TGFiZWx9IPCfkZE8Lz59PC9kaXY+CiAgICA8L2Rpdj4KICA8L2Rpdj47Cn0K
+"use client";
+
+import type { ReactNode } from "react";
+
+export function MissionCard({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <div className={`relative ${className}`}><span className="pushpin" /><div className="sticker p-8">{children}</div></div>;
+}
+
+export function FeedbackPanel({ title, children, tone = "mint" }: { title: string; children: ReactNode; tone?: "mint" | "sky" | "butter" }) {
+  const colors = { mint: "bg-pastel-mint", sky: "bg-pastel-sky", butter: "bg-pastel-butter" };
+  return <section className={`mt-5 rounded-3xl px-6 py-5 text-[22px] leading-relaxed ${colors[tone]}`} aria-live="polite"><h3 className="font-black">{title}</h3><div className="mt-2">{children}</div></section>;
+}
+
+export function Objective({ children }: { children: ReactNode }) {
+  return <div className="mb-5 rounded-2xl border border-ink/10 bg-white/75 px-5 py-4 text-[20px] font-bold shadow-sm"><span className="mr-2 text-leaf-deep">OBJECTIVE</span>{children}</div>;
+}
+
+export function PlayerHud({ rank, xp, next, pct, streak, best, label, streakLabel, bestLabel, nextLabel, maxLabel }: {
+  rank: string; xp: number; next: string | null; pct: number; streak: number; best: number;
+  label: string; streakLabel: string; bestLabel: string; nextLabel: string; maxLabel: string;
+}) {
+  return <div className="sticker mb-6 flex flex-wrap items-center gap-5 px-6 py-4">
+    <div className="stamp-badge flex h-[84px] w-[84px] shrink-0 items-center justify-center rounded-full border-4 border-dashed border-ink/25 bg-sun text-center text-2xl shadow-[0_8px_20px_rgba(0,0,0,0.15)]" aria-hidden="true">🛡</div>
+    <div className="min-w-[300px] flex-1">
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1"><span className="text-[28px] font-black">{rank}</span><span className="text-[21px] font-bold text-ink-soft">🛡 {xp} {label}</span>{streak >= 2 ? <span className="rounded-full bg-[#ffe3c2] px-4 py-1.5 text-[19px] font-extrabold text-[#9a4d00]">🔥 {streakLabel} ×{streak}</span> : null}{best >= 3 ? <span className="rounded-full bg-cream px-4 py-1.5 text-[17px] font-extrabold text-ink-soft">{bestLabel} 🔥 ×{best}</span> : null}</div>
+      <div className="mt-2.5 h-[22px] overflow-hidden rounded-full border border-paper-line bg-cream-deep" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${label} progress`}><div className="xp-fill h-full rounded-full" style={{ width: `${pct}%` }} /></div>
+      <div className="mt-1.5 text-[17px] font-bold text-ink-soft">{next ? <>{next}</> : <>{maxLabel} 👑</>}</div>
+    </div>
+  </div>;
+}
