@@ -181,7 +181,7 @@ export interface ApiResult {
   usage: { input: number; output: number };
   verdict?: string; flags?: string[]; text?: string;
   reply?: string; won?: boolean;
-  roast?: string; tip?: string;
+  roast?: string; tip?: string; explanation?: string;
   answer?: string;
 }
 
@@ -229,17 +229,44 @@ const MockBrain = {
    fetch to the server route. Nothing else changes.
    ============================================================ */
 export const Api = {
-  mode: "demo",               // later: "live"
-  endpoint: null as string | null, // later: "/api/..." on your server
+  mode: "hybrid",
+  endpoint: "/api/ai",
   async call(route: string, payload: MockPayload): Promise<ApiResult> {
-    // DEMO ONLY: simulates the API with saved answers and local rules.
+    // Deterministic rules remain authoritative for gameplay and scoring.
     await new Promise(r => setTimeout(r, 650));
     const out = MockBrain.answer(route, payload);
-    return {
+    const fallback: ApiResult = {
       ...out,
       source: "backup",
       usage: { input: 320 + JSON.stringify(payload).length, output: 180 },
     };
+
+    try {
+      const response = await fetch(this.endpoint, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ route, payload }),
+      });
+      if (!response.ok) return fallback;
+      const data = await response.json() as {
+        mode?: string;
+        result?: { text?: string; explanation?: string; answer?: string; usage?: { input?: number; output?: number } };
+      };
+      if (data.mode !== "live" || !data.result) return fallback;
+      const explanation = data.result.explanation || data.result.text;
+      return {
+        ...out,
+        ...(route === "ask" && data.result.answer ? { answer: data.result.answer } : {}),
+        ...(explanation ? { explanation } : {}),
+        source: "live",
+        usage: {
+          input: Number(data.result.usage?.input ?? 0),
+          output: Number(data.result.usage?.output ?? 0),
+        },
+      };
+    } catch {
+      return fallback;
+    }
   }
 };
 

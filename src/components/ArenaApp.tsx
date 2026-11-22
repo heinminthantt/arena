@@ -7,6 +7,7 @@
    Burmese renders in MiSans Myanmar via the font stack in globals.css. */
 
 import { useEffect, useRef, useState } from "react";
+import { PlayerHud } from "@/components/GamePrimitives";
 import Image from "next/image";
 import {
   Api, BADGES, CARDS, ICONIMG, PAGES, QUIZ, STORAGE_KEY, T, XP,
@@ -15,6 +16,7 @@ import {
   type ArenaState, type Lang,
 } from "@/lib/content";
 import Hills from "@/components/Hills";
+import { FeedbackPanel, Objective } from "@/components/GamePrimitives";
 
 const PASTELS = ["#f5b8d0", "#bfe3f5", "#c8f0d8", "#fff3b0", "#c2b3f3", "#f9d9a8"];
 const METER_COLORS = ["#e53935", "#ed9948", "#f5b301", "#82b26b", "#3f6d30"];
@@ -34,7 +36,8 @@ export default function ArenaApp() {
   const [vaultInput, setVaultInput] = useState("");
   const [pwInput, setPwInput] = useState("");
   const [askInput, setAskInput] = useState("");
-  const [roastOut, setRoastOut] = useState<{ roast: string; tip: string; score: number } | null>(null);
+  const [roastOut, setRoastOut] = useState<{ roast: string; tip: string; score: number; explanation?: string } | null>(null);
+  const [liveNote, setLiveNote] = useState<string | null>(null);
 
   /* game layer: level-up celebration (transient; the rank itself lives in state) */
   const [celeb, setCeleb] = useState<number | null>(null);
@@ -50,7 +53,7 @@ export default function ArenaApp() {
       if (raw) initial = migrateState(JSON.parse(raw));
     } catch { /* keep fresh state */ }
     loaded.current = true;
-    setS(initial);
+    setS(initial); // eslint-disable-line react-hooks/set-state-in-effect
   }, []);
 
   /* save on every change, like the demo's save() after every action */
@@ -374,6 +377,7 @@ export default function ArenaApp() {
     const askAi = async () => {
       setScamBusy(true);
       const r = await Api.call("scam", { cardId: i, lang });
+      setLiveNote(r.source === "live" ? "Live mentor explanation" : "Demo backup explanation");
       bumpUsage(r.usage);
       mut(d => {
         const aiRight = (r.verdict === "scam") === c.isScam;
@@ -396,6 +400,7 @@ export default function ArenaApp() {
     return (
       <>
         {pageHead("🃏", "scam", "scamSub")}
+        <Objective>{lang === "my" ? "အထောက်အထားကို ရွေးပြီး လုံခြုံတဲ့ လုပ်ဆောင်ချက်ကို ဆုံးဖြတ်ပါ။" : "Inspect the evidence, classify the threat, and choose the safest action."}</Objective>
         {dots(CARDS.length, i, d => !!S.scam.revealed[d],
           d => mut(dd => { dd.scam.index = d; dd.scam.vote = null; }), "Card")}
         <div className="relative">
@@ -437,6 +442,7 @@ export default function ArenaApp() {
                 <ul className="ml-6 mt-2 list-disc text-[23px] leading-[1.75]">
                   {rev.flags.map((f, fi) => <li key={fi}>{f}</li>)}
                 </ul>
+                {liveNote ? <FeedbackPanel title={liveNote} tone="sky">{lang === "my" ? "အဖြေကို အတန်းအတွက် လုံခြုံရေးသင်ခန်းစာအဖြစ် အသုံးပြုပါ။" : "Use this explanation as a defensive learning aid; the lesson verdict remains authoritative."}</FeedbackPanel> : null}
               </div>
             ) : null}
           </div>
@@ -476,6 +482,7 @@ export default function ArenaApp() {
     return (
       <>
         {pageHead("🔐", "vault", "vaultSub")}
+        <Objective>{lang === "my" ? "ဘော့ရဲ့ လျှို့ဝှက်ချက်ကို ကာကွယ်တဲ့ စည်းမျဉ်းကို ရှာပါ။" : "Identify the manipulation attempt and design a safer response."}</Objective>
         <div className="mb-5 flex flex-wrap items-center gap-3">
           {[0, 1, 2].map(l => (
             <button key={l}
@@ -526,6 +533,7 @@ export default function ArenaApp() {
       if (!pw) return;
       const score = pwScore(pw);
       const r = await Api.call("roast", { score, length: pw.length, lang });
+      setLiveNote(r.source === "live" ? "Live mentor explanation" : "Demo backup explanation");
       bumpUsage(r.usage);
       const masked = pw.slice(0, 2) + "•".repeat(Math.max(2, pw.length - 2));
       mut(d => {
@@ -542,6 +550,7 @@ export default function ArenaApp() {
     return (
       <>
         {pageHead("🔑", "roast", "roastSub")}
+        <Objective>{lang === "my" ? "Password အတုနဲ့ အကောင့်ကာကွယ်မှုကို မြှင့်တင်ပါ။" : "Build a long, unique identity defense without entering a real password."}</Objective>
         <div className="relative">
           <span className="pushpin" />
           <div className="sticker p-8">
@@ -574,6 +583,7 @@ export default function ArenaApp() {
               <div className="mt-5 flex flex-col gap-3">
                 <div className="rounded-3xl bg-pastel-mint px-6 py-5 text-[23px] leading-relaxed">🛡 {roastOut.roast}</div>
                 <div className="rounded-3xl bg-pastel-sky px-6 py-5 text-[23px] leading-relaxed">{roastOut.tip}</div>
+                {liveNote ? <FeedbackPanel title={liveNote} tone="sky">{lang === "my" ? "အမှန်တကယ် စကားဝှက် မထည့်ပါနဲ့။ ရှည်လျား၊ မတူညီတဲ့ passphrase နဲ့ MFA သုံးပါ။" : "Never enter a real password here. Use a long, unique passphrase and enable MFA."}</FeedbackPanel> : null}
               </div>
             ) : null}
           </div>
@@ -620,6 +630,7 @@ export default function ArenaApp() {
     return (
       <>
         {pageHead("💬", "ask", "askSub")}
+        <Objective>{lang === "my" ? "ဖြစ်ရပ်ကို ရပ်တန့်၊ အထောက်အထားသိမ်း၊ အကောင့်ကာကွယ်ပြီး သတင်းပို့ပါ။" : "Practice the correct incident-response order: stop, preserve evidence, secure, and report."}</Objective>
         <div className="relative">
           <span className="pushpin" />
           <div className="sticker p-8">
@@ -670,8 +681,8 @@ export default function ArenaApp() {
       S.roast.history.length > 0 && S.ask.history.length > 0;
     return (
       <>
-        {/* Boss framing: the quiz is the final boss of the journey.
-            The note below is a SOFT gate only; it never blocks anything. */}
+        {pageHead("🏆", "quiz", "quizSub")}
+        <Objective>{lang === "my" ? "အထောက်အထားနဲ့ ဆုံးဖြတ်ချက်ကို အသုံးပြုပြီး Cyber Defense Command ကို ပြီးမြောက်ပါ။" : "Combine threat analysis, identity defense, privacy, and incident response in the final command."}</Objective>
         <div className="sticker relative mb-6 overflow-hidden bg-gradient-to-br from-pastel-lilac via-[#ded2fb] to-pastel-sky p-8">
           <span className="absolute right-7 top-6 rounded-md bg-pin px-4 py-1.5 text-[17px] font-black tracking-widest text-white shadow"
             style={{ transform: "rotate(4deg)" }}>
@@ -933,43 +944,15 @@ export default function ArenaApp() {
           </div>
         </div>
 
-        {/* Game layer: rank, Shield Points bar and streak, visible everywhere */}
         {(() => {
           const rf = rankFor(S.game.xp);
           const pct = rf.next ? Math.min(100, Math.round((rf.into / rf.span) * 100)) : 100;
-          return (
-            <div className="sticker mb-6 flex flex-wrap items-center gap-5 px-6 py-4">
-              <div className="stamp-badge flex h-[84px] w-[84px] shrink-0 flex-col items-center justify-center rounded-full border-4 border-dashed border-ink/25 bg-sun text-center shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
-                <span className="text-[34px] leading-none">{rf.rank.icon}</span>
-              </div>
-              <div className="min-w-[300px] flex-1">
-                <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                  <span className="text-[28px] font-black">{lang === "my" ? rf.rank.my : rf.rank.en}</span>
-                  <span className="text-[21px] font-bold text-ink-soft">
-                    🛡 {S.game.xp} {t("shieldPoints")}
-                  </span>
-                  {S.game.streak >= 2 ? (
-                    <span className="rounded-full bg-[#ffe3c2] px-4 py-1.5 text-[19px] font-extrabold text-[#9a4d00]">
-                      🔥 {t("streak")} ×{S.game.streak}
-                    </span>
-                  ) : null}
-                  {S.game.bestStreak >= 3 ? (
-                    <span className="rounded-full bg-cream px-4 py-1.5 text-[17px] font-extrabold text-ink-soft">
-                      {t("bestStreak")} 🔥 ×{S.game.bestStreak}
-                    </span>
-                  ) : null}
-                </div>
-                <div className="mt-2.5 h-[22px] overflow-hidden rounded-full border border-paper-line bg-cream-deep">
-                  <div className="xp-fill h-full rounded-full" style={{ width: pct + "%" }} />
-                </div>
-                <div className="mt-1.5 text-[17px] font-bold text-ink-soft">
-                  {rf.next
-                    ? <>{rf.next.at - S.game.xp} {t("xpToNext")}: {lang === "my" ? rf.next.my : rf.next.en}</>
-                    : <>{t("maxRank")} 👑</>}
-                </div>
-              </div>
-            </div>
-          );
+          return <PlayerHud rank={lang === "my" ? rf.rank.my : rf.rank.en} xp={S.game.xp} next={rf.next ? `${rf.next.at - S.game.xp} ${t("xpToNext")}: ${lang === "my" ? rf.next.my : rf.next.en}` : null} pct={pct} streak={S.game.streak} best={S.game.bestStreak} label={t("shieldPoints")} streakLabel={t("streak")} bestLabel={t("bestStreak")} nextLabel={t("xpToNext")} maxLabel={t("maxRank")} />;
+        })()}
+        {(() => {
+          const rf = rankFor(S.game.xp);
+          const pct = rf.next ? Math.min(100, Math.round((rf.into / rf.span) * 100)) : 100;
+          return <PlayerHud rank={lang === "my" ? rf.rank.my : rf.rank.en} xp={S.game.xp} next={rf.next ? `${rf.next.at - S.game.xp} ${t("xpToNext")}: ${lang === "my" ? rf.next.my : rf.next.en}` : null} pct={pct} streak={S.game.streak} best={S.game.bestStreak} label={t("shieldPoints")} streakLabel={t("streak")} bestLabel={t("bestStreak")} nextLabel={t("xpToNext")} maxLabel={t("maxRank")} />;
         })()}
 
         {(pages[S.page] || renderHome)()}
