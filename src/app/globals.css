@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+/* MiSans Myanmar: Burmese glyphs. Latin stays on Geist because Geist is
+   first in the font stack and the browser falls back per glyph, so
+   Myanmar script characters land on MiSans Myanmar automatically. */
+@font-face {
+  font-family: "MiSans Myanmar";
+  src: url("/fonts/MiSansMyanmar-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MiSans Myanmar";
+  src: url("/fonts/MiSansMyanmar-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MiSans Myanmar";
+  src: url("/fonts/MiSansMyanmar-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MiSans Myanmar";
+  src: url("/fonts/MiSansMyanmar-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@theme {
+  /* heinminthant.com / LatSaung portfolio palette, sampled live 2026-11-20 */
+  --color-cream: #fdf6e3;
+  --color-cream-deep: #f4f1ea;
+  --color-ink: #111111;
+  --color-ink-soft: #555555;
+  --color-sun: #fbeb9a;
+  --color-lime: #c0e83d;
+  --color-pin: #e53935;
+  --color-sky: #8cc9eb;
+  --color-leaf: #82b26b;
+  --color-leaf-deep: #3f6d30;
+  --color-paper-line: #ede8d0;
+  --color-input-line: #e5e0d0;
+  --color-pastel-pink: #f5b8d0;
+  --color-pastel-sky: #bfe3f5;
+  --color-pastel-mint: #c8f0d8;
+  --color-pastel-butter: #fff3b0;
+  --color-pastel-lilac: #c2b3f3;
+  --color-pastel-peach: #ed9948;
+  --font-display: var(--font-geist-sans), "MiSans Myanmar", system-ui, sans-serif;
+  --font-body: var(--font-geist-sans), "MiSans Myanmar", system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background-color: var(--color-cream);
+  /* cream graph paper: 1px lines at 120px spacing (LatSaung) */
+  background-image:
+    linear-gradient(#e9e4d2 1px, transparent 1px),
+    linear-gradient(90deg, #e9e4d2 1px, transparent 1px);
+  background-size: 120px 120px;
+  min-height: 100vh;
+}
+
+/* Liquid glass: frosted, translucent, soft border and shadow */
+.glass {
+  background: rgba(255, 255, 255, 0.45);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  backdrop-filter: blur(16px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.glass-hero {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(168, 224, 245, 0.55));
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Scrapbook paper card: paper white, hairline border, one soft shadow */
+.sticker {
+  background: #ffffff;
+  border: 1px solid #ede8d0;
+  border-radius: 26px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+}
+
+.sticker-soft {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 24px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+}
+
+/* Red pushpin that sits on top of a scrapbook card.
+   Render it on a wrapper OUTSIDE any content-visibility element so the
+   straddling half is never clipped (LatSaung lesson). */
+.pushpin {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #ff8a80, #e53935 60%, #b71c1c);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Translucent tape strip across the top of a card */
+.tape {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 130px;
+  height: 30px;
+  background: rgba(255, 243, 176, 0.75);
+  border-left: 1px dashed rgba(0, 0, 0, 0.08);
+  border-right: 1px dashed rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-x 26s linear infinite;
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(var(--fl-rot, 0deg)); }
+  50% { transform: translateY(-9px) rotate(var(--fl-rot, 0deg)); }
+}
+.animate-floaty {
+  animation: floaty 5s ease-in-out infinite;
+}
+
+:focus-visible {
+  outline: 4px solid #8cc9eb;
+  outline-offset: 2px;
+}
+
+input, textarea, select {
+  outline: none;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(17, 17, 17, 0.45) !important;
+  box-shadow: 0 0 0 3px rgba(192, 232, 61, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee, .animate-floaty { animation: none; }
+}
