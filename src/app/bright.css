@@ -58,6 +58,11 @@
   box-shadow: 0 2px 0 var(--pv-shade, rgba(0, 0, 0, 0.25));
 }
 
+/* White navigation buttons (Back / Next) need dark text, not the default white */
+.pv-btn.bg-white {
+  color: #2b2140;
+}
+
 /* Chunky progress bar */
 .pv-bar {
   height: 30px;
