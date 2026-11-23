@@ -124,7 +124,7 @@ export const CARDS: ScamCard[] = [
     flagsMy:["လွယ်လွယ် ငွေရမယ် ဆိုတဲ့ ကတိ","အလုပ်ရဖို့ အရင် ငွေသွင်းခိုင်းတာ","Telegram တစ်ခုတည်းက ဆက်သွယ်ခိုင်းတာ"] },
   { isScam:false,
     en:"Your order #4821 from GetStuffHere has shipped. Track it here: getstuffhere.vercel.app/track/4821",
-    my:"GetStuffHere က သင့် အော်ဒါ #4821 ပို့လိုက်ပါပြီ။ ဒီမှာ ကြည့်နိုင်ပါတယ်: getstuffhere.vercel.app/track/4821 (မူကွဲ ဘာသာပြန်)",
+    my:"GetStuffHere က သင့် အော်ဒါ #4821 ပို့လိုက်ပါပြီ။ ဒီမှာ ကြည့်နိုင်ပါတယ်: getstuffhere.vercel.app/track/4821",
     flagsEn:["It matches an order the buyer really placed","The domain matches the shop","It asks for no password, PIN, or payment"],
     flagsMy:["ကိုယ် တကယ် မှာထားတဲ့ အော်ဒါနဲ့ ကိုက်တယ်","လိပ်စာက ဆိုင်ရဲ့ လိပ်စာနဲ့ ကိုက်တယ်","Password, PIN, ငွေ ဘာမှ မတောင်းပါ"] },
   { isScam:false,
@@ -134,7 +134,7 @@ export const CARDS: ScamCard[] = [
     flagsMy:["Login ဝင်ခိုင်းတဲ့ လင့်ခ် မပါပါ","ဆုလည်း မဟုတ်၊ ခြိမ်းခြောက်တာလည်း မဟုတ်","ကျောင်းရဲ့ တရားဝင် Page ကို ကိုယ်တိုင် သွားကြည့်ခိုင်းတာ"] },
   { isScam:true,
     en:"Hi, I am your senior from UCS Magway. I need your student login to fix your exam result. Send it now, please.",
-    my:"ဟိုင်း၊ ကျွန်တော်က UCS Magway က စီနီယာပါ။ စာမေးပွဲ အမှတ် ပြင်ဖို့ သင့် student login လိုပါတယ်။ အခု ပို့ပေးပါ။ (မူကွဲ ဘာသာပြန်)",
+    my:"ဟိုင်း၊ ကျွန်တော်က UCS Magway က စီနီယာပါ။ စာမေးပွဲ အမှတ် ပြင်ဖို့ သင့် student login လိုပါတယ်။ အခု ပို့ပေးပါ။",
     flagsEn:["Asks for a password","Uses authority and urgency","No teacher or senior ever needs your password"],
     flagsMy:["Password တောင်းတယ်","အထက်လူ ပုံစံနဲ့ အလျင်လို ခိုင်းတယ်","ဆရာ၊ စီနီယာ ဘယ်သူမှ သင့် Password မလိုပါ"] }
 ];
