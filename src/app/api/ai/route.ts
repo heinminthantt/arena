@@ -105,11 +105,12 @@ function buildPrompt(route: string, payload: ArenaPayload) {
     const score = Math.max(0, Math.min(4, payload.score ?? pwScore("")));
     const flags = (payload.patternFlags ?? []).filter(f => typeof f === "string").slice(0, 6);
     return {
-      system: `You are a witty but kind cybersecurity teacher running a Password Roast booth for Grade 12 students. ${languageRule} Never request, guess, or infer the student's actual password; you only ever see derived signals about its shape. Return exactly {"roast": string, "explanation": string}.`,
+      system: `You are a witty but kind cybersecurity teacher running a Password Roast booth for Grade 12 students. ${languageRule} Never request, guess, or infer the student's actual password; you only ever see derived signals about its shape. Return exactly {"roast": string, "tip": string, "explanation": string}.`,
       user: `A student checked a password. Score: ${score}/4. Length: ${Math.max(0, payload.length ?? 0)} characters. Pattern signals: ${flags.length ? flags.join("; ") : "none detected"}.
-Write two things:
+Write three things:
 1. "roast": ONE short, playful, creative roast line (one sentence) that jokes about THIS password's specific signals, for example its length, its missing character types, or its predictable patterns. Be inventive: use a fresh metaphor, comparison, or image every time, and never reuse stock phrasing like "fall over in a light breeze". Match the tone to the score: tease weak passwords, cheer strong ones. Keep it classroom friendly, funny, never mean about the student personally.
-2. "explanation": 1-2 short educational sentences naming the biggest strength or weakness in the signals and one concrete fix (passphrase, unique password per account, MFA) where appropriate.`,
+2. "explanation": 1-2 short educational sentences naming the biggest strength or weakness in the signals and one concrete fix (passphrase, unique password per account, MFA) where appropriate.
+3. "tip": ONE short, concrete, practical tip tied to these specific signals, with fresh wording every time. Pick the angle that fits best: length, unpredictability, a passphrase recipe, one unique password per account, a password manager, or turning on MFA. Start it with "Tip: " in English or the equivalent lead-in in the student's language.`,
     };
   }
 
@@ -139,7 +140,7 @@ function shape(route: string, value: Record<string, unknown>) {
   if (route === "debrief" && typeof value.debrief === "string" && value.debrief.trim()) return { debrief: value.debrief };
   if (route === "scam" && typeof value.explanation === "string") return { text: value.explanation };
   if (route === "vault" && typeof value.explanation === "string") return { explanation: value.explanation };
-  if (route === "roast" && typeof value.roast === "string" && value.roast.trim()) return { roast: value.roast, explanation: typeof value.explanation === "string" ? value.explanation : "" };
+  if (route === "roast" && typeof value.roast === "string" && value.roast.trim()) return { roast: value.roast, tip: typeof value.tip === "string" && value.tip.trim() ? value.tip : undefined, explanation: typeof value.explanation === "string" ? value.explanation : "" };
   if (route === "ask" && typeof value.answer === "string") return { answer: value.answer };
   return null;
 }
@@ -167,7 +168,7 @@ export async function POST(req: Request) {
           "x-api-key": process.env.ANTHROPIC_API_KEY,
           "anthropic-version": "2023-06-01",
         },
-        body: JSON.stringify({ model, max_tokens: route === "debrief" || route === "ask" ? 600 : 300, ...(route === "roast" ? { temperature: 1.0 } : {}), system: prompt.system, messages: [{ role: "user", content: prompt.user }] }),
+        body: JSON.stringify({ model, max_tokens: route === "debrief" || route === "ask" ? 600 : route === "roast" ? 400 : 300, ...(route === "roast" ? { temperature: 1.0 } : {}), system: prompt.system, messages: [{ role: "user", content: prompt.user }] }),
         signal: controller.signal,
       });
     } finally {

@@ -261,6 +261,36 @@ export const ROAST_EXTRAS: Record<number, { en: string; my: string }[]> = {
   ],
 };
 
+/* Local tip pool per score band, so the tip under the roast varies too,
+   in backup mode and as the fallback under a live AI tip. */
+export const ROAST_TIPS: Record<number, { en: string; my: string }[]> = {
+  0: [
+    { en: "Tip: start over with 4 unrelated words, like a tiny story only you would invent. Length beats clever symbols.", my: "အကြံပြုချက်: အသစ်က ပြန်စပါ။ မဆိုင်တဲ့ စကားလုံး ၄ လုံးကို သင်ပဲ ဖန်တီးတဲ့ ဇာတ်လမ်းလေးလို ဆက်သုံးပါ။ ရှည်တာက ရှုပ်တာထက် ပိုကောင်းတယ်။" },
+    { en: "Tip: never use birthdays, names, or keyboard walks like 123456. They are the first guesses every attacker tries.", my: "အကြံပြုချက်: မွေးနေ့၊ နာမည်နဲ့ 123456 လို ကီးဘုတ် လမ်းကြောင်းတွေ ဘယ်တော့မှ မသုံးပါနဲ့။ တိုက်ခိုက်သူတိုင်း အရင်ဆုံး စမ်းတာတွေပဲ။" },
+    { en: "Tip: make it at least 12 characters. Four short random words beat one short clever word every time.", my: "အကြံပြုချက်: အနည်းဆုံး ၁၂ လုံး ရှိအောင် လုပ်ပါ။ ကျပန်း စကားလုံး တိုတို ၄ လုံးက ပါးနပ်တဲ့ စကားလုံး တစ်လုံးထက် အမြဲ သာတယ်။" },
+  ],
+  1: [
+    { en: "Tip: add two more unrelated words and a number in the middle. You are one good idea away from strong.", my: "အကြံပြုချက်: မဆိုင်တဲ့ စကားလုံး ၂ လုံး ထပ်ထည့်ပြီး အလယ်မှာ နံပါတ် တစ်ခု ထည့်ပါ။ ခိုင်မာဖို့ အကြံကောင်း တစ်ခု လိုနေတာပဲ။" },
+    { en: "Tip: swap the predictable parts. A year or a pet name at the end is the first thing attackers append too.", my: "အကြံပြုချက်: ခန့်မှန်းလွယ်တဲ့ အပိုင်းတွေ လဲပါ။ နောက်ဆုံးမှာ ခုနှစ် ဒါမှမဟုတ် အိမ်မွေးတိရစ္ဆာန် နာမည် ထည့်တာကို တိုက်ခိုက်သူတွေလည်း အရင် စမ်းတယ်။" },
+    { en: "Tip: length first. Doubling the length helps far more than adding one symbol.", my: "အကြံပြုချက်: အရှည်ကို အရင် ဦးစားပေးပါ။ အရှည် နှစ်ဆ ဖြစ်တာက သင်္ကေတ တစ်ခု ထပ်ထည့်တာထက် အများကြီး ပိုကူညီတယ်။" },
+  ],
+  2: [
+    { en: "Tip: you have the ingredients. Make it longer and drop any word a friend could guess about you.", my: "အကြံပြုချက်: ပါဝင်ပစ္စည်း ရှိပြီးသား။ ပိုရှည်အောင် လုပ်ပြီး သူငယ်ချင်း ခန့်မှန်းနိုင်တဲ့ စကားလုံးတွေ ဖြုတ်ပါ။" },
+    { en: "Tip: turn it into a passphrase: several unrelated words tell a story only you know.", my: "အကြံပြုချက်: စကားစု အဖြစ် ပြောင်းပါ။ မဆိုင်တဲ့ စကားလုံး အများကြီးက သင်ပဲ သိတဲ့ ဇာတ်လမ်း ဖြစ်တယ်။" },
+    { en: "Tip: add one word that makes no sense at all. Random is what machines cannot guess.", my: "အကြံပြုချက်: လုံးဝ အဓိပ္ပာယ် မရှိတဲ့ စကားလုံး တစ်လုံး ထည့်ပါ။ ကျပန်းဆိုတာ စက်တွေ ခန့်မှန်းလို့ မရတဲ့ အရာပဲ။" },
+  ],
+  3: [
+    { en: "Tip: one more unrelated word and this becomes a fortress. Then never reuse it on another account.", my: "အကြံပြုချက်: မဆိုင်တဲ့ စကားလုံး တစ်လုံး ထပ်ထည့်ရင် ခံတပ် ဖြစ်သွားမယ်။ ပြီးရင် တခြား အကောင့်မှာ ပြန်မသုံးပါနဲ့။" },
+    { en: "Tip: keep this pattern, and turn on MFA so even a stolen password is not enough on its own.", my: "အကြံပြုချက်: ဒီပုံစံကို ထိန်းထားပြီး MFA ဖွင့်ပါ။ စကားဝှက် ခိုးခံရရင်တောင် သူ့ချည်း မလုံလောက်အောင်လို့ပါ။" },
+    { en: "Tip: store it in a password manager instead of your memory, then every account can have its own.", my: "အကြံပြုချက်: မှတ်ဉာဏ်ထဲ မထားဘဲ password manager ထဲ သိမ်းပါ။ ဒါဆို အကောင့်တိုင်းမှာ ကိုယ်ပိုင် တစ်ခုစီ ရှိနိုင်တယ်။" },
+  ],
+  4: [
+    { en: "Tip: this is the pattern to copy. Now give every other account its own version, never the same one twice.", my: "အကြံပြုချက်: ဒါ အတုယူရမယ့် ပုံစံပဲ။ တခြား အကောင့်တိုင်းကိုလည်း ကိုယ်ပိုင် ပုံစံ တစ်ခုစီ ပေးပါ၊ အတူတူ နှစ်ခါ မသုံးပါနဲ့။" },
+    { en: "Tip: protect the fortress gate too: turn on MFA for this account.", my: "အကြံပြုချက်: ခံတပ် တံခါးကိုပါ ကာကွယ်ပါ။ ဒီ အကောင့်အတွက် MFA ဖွင့်ထားပါ။" },
+    { en: "Tip: save it in a password manager. A strong password you forget helps no one.", my: "အကြံပြုချက်: password manager ထဲ သိမ်းပါ။ မေ့သွားတဲ့ ခိုင်မာတဲ့ စကားဝှက်က ဘယ်သူ့ကိုမှ မကူညီဘူး။" },
+  ],
+};
+
 /* ---------- Q&A chat: saved answers (demo/offline) ---------- */
 export function askAnswer(q: string, lang: Lang): string {
   const s = q.toLowerCase();
@@ -388,9 +418,12 @@ const MockBrain = {
       const band = ROASTS[p.score ?? 0];
       const pool = [band, ...(ROAST_EXTRAS[p.score ?? 0] ?? [])];
       const r = pool[Math.floor(Math.random() * pool.length)];
+      const tips = ROAST_TIPS[p.score ?? 0] ?? [];
+      const tipPick = tips.length ? tips[Math.floor(Math.random() * tips.length)] : null;
       return { roast: p.lang === "my" ? r.my : r.en,
-        tip: p.lang === "my" ? "အကြံပြုချက်: မဆိုင်တဲ့ စကားလုံး ၄ လုံးနဲ့ နံပါတ် တစ်ခု သုံးပါ။ ရှည်တာက ရှုပ်တာထက် ပိုကောင်းတယ်။"
-                             : "Tip: use 4 unrelated words plus a number. Length beats clever symbols." };
+        tip: tipPick ? (p.lang === "my" ? tipPick.my : tipPick.en)
+                     : (p.lang === "my" ? "အကြံပြုချက်: မဆိုင်တဲ့ စကားလုံး ၄ လုံးနဲ့ နံပါတ် တစ်ခု သုံးပါ။ ရှည်တာက ရှုပ်တာထက် ပိုကောင်းတယ်။"
+                                        : "Tip: use 4 unrelated words plus a number. Length beats clever symbols.") };
     }
     if (route === "ask") { return { answer: askAnswer(p.question || "", p.lang) }; }
     return { answer: "" };
@@ -436,13 +469,14 @@ export const Api = {
       if (!response.ok) return fallback;
       const data = await response.json() as {
         mode?: string;
-        result?: { text?: string; explanation?: string; answer?: string; debrief?: string; roast?: string; usage?: { input?: number; output?: number } };
+        result?: { text?: string; explanation?: string; answer?: string; debrief?: string; roast?: string; tip?: string; usage?: { input?: number; output?: number } };
       };
       if (data.mode !== "live" || !data.result) return fallback;
       const explanation = data.result.explanation || data.result.text;
       return {
         ...out,
         ...(route === "roast" && data.result.roast ? { roast: data.result.roast } : {}),
+        ...(route === "roast" && data.result.tip ? { tip: data.result.tip } : {}),
         ...(route === "ask" && data.result.answer ? { answer: data.result.answer } : {}),
         ...(route === "debrief" && data.result.debrief ? { debrief: data.result.debrief } : {}),
         ...(explanation ? { explanation } : {}),
@@ -728,10 +762,11 @@ export function migrateState(parsed: Partial<ArenaState> | null): ArenaState {
 
 export const PAGES = [
   { id: "home", icon: "🏠" }, { id: "scam", icon: "🃏" }, { id: "rush", icon: "⚡" },
-  { id: "vault", icon: "🔐" }, { id: "link", icon: "🔍" }, { id: "roast", icon: "🔑" },
+  { id: "vault", icon: "🔐" }, { id: "link", icon: "🔍" },
   { id: "privacy", icon: "🔒" }, { id: "permission", icon: "✅" }, { id: "spot", icon: "👁️" },
-  { id: "deepfake", icon: "🎭" }, { id: "ask", icon: "💬" }, { id: "call", icon: "📞" },
+  { id: "deepfake", icon: "🎭" }, { id: "call", icon: "📞" },
   { id: "friend", icon: "💛" }, { id: "quiz", icon: "🏆" }, { id: "boss", icon: "👑" },
+  { id: "ask", icon: "💬" }, { id: "roast", icon: "🔑" },
   { id: "records", icon: "📒" }
 ] as const;
 
