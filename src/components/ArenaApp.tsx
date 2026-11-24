@@ -13,7 +13,7 @@ import Image from "next/image";
 import {
   Api, BADGES, CARDS, PAGES, QUIZ, SECTION_COLORS, STORAGE_KEY, T,
   VAULT_LESSONS, VAULT_TRICKS, XP,
-  freshState, migrateState, pwScore, rankFor, syncBadges,
+  freshState, migrateState, pwFlags, pwScore, rankFor, syncBadges,
   xpFlat, xpForCorrect, xpForWrong,
   type ArenaState, type GameId, type Lang, type VaultTrick,
 } from "@/lib/content";
@@ -702,7 +702,7 @@ export default function ArenaApp() {
       const pw = pwInput;
       if (!pw) return;
       const score = pwScore(pw);
-      const r = await Api.call("roast", { score, length: pw.length, lang });
+      const r = await Api.call("roast", { score, length: pw.length, patternFlags: pwFlags(pw), lang });
       setLiveNote(r.source === "live" ? "Live mentor explanation" : "Demo backup explanation");
       bumpUsage(r.usage);
       const masked = pw.slice(0, 2) + "•".repeat(Math.max(2, pw.length - 2));
