@@ -296,6 +296,15 @@ export default function ArenaApp() {
           return g.cleared ? "✓ " + t("clearedWord") : g.plays > 0 ? g.plays + " plays" : "";
         })()
       : "";
+    /* Home card order: the two free tools (Q&A chat, then Password Roast)
+       sit directly under the Boss Fight card. The sidebar keeps PAGES order. */
+    const homeCards = (() => {
+      const rest = PAGES.filter(p => p.id !== "home" && p.id !== "roast" && p.id !== "ask");
+      const tools = PAGES.filter(p => p.id === "ask" || p.id === "roast")
+        .sort((a, b) => (a.id === "ask" ? -1 : 1) - (b.id === "ask" ? -1 : 1));
+      const bi = rest.findIndex(p => p.id === "boss");
+      return bi >= 0 ? [...rest.slice(0, bi + 1), ...tools, ...rest.slice(bi + 1)] : [...rest, ...tools];
+    })();
     return (
       <>
         <div className="relative overflow-hidden rounded-[28px] bg-white/10 px-2 pb-2 pt-1">
@@ -452,7 +461,7 @@ export default function ArenaApp() {
         })()}
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-5">
-          {PAGES.filter(p => p.id !== "home").map(p => {
+          {homeCards.map(p => {
             const c = SECTION_COLORS[p.id] ?? SECTION_COLORS.home;
             const prog = done(p.id);
             return (
