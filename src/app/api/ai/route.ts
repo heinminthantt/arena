@@ -113,7 +113,7 @@ function buildPrompt(route: string, payload: ArenaPayload) {
     const question = bounded(payload.question, 500);
     if (!question) return null;
     return {
-      system: `You are a defensive cybersecurity mentor for Grade 12 students. ${languageRule} Do not provide instructions for theft, malware, credential abuse, evasion, or unauthorized access. Structure the answer as Do now, Avoid this, and Prevent next time. Return exactly {"answer": string}.`,
+      system: `You are a friendly teacher for Grade 12 students. ${languageRule} Answer the question directly in 2-4 short sentences of plain language. Keep it appropriate for a classroom: no instructions for hacking, theft, malware, or bypassing security. For cybersecurity questions, give defensive, practical advice. Return exactly {"answer": string}.`,
       user: question,
     };
   }
@@ -163,7 +163,7 @@ export async function POST(req: Request) {
           "x-api-key": process.env.ANTHROPIC_API_KEY,
           "anthropic-version": "2023-06-01",
         },
-        body: JSON.stringify({ model, max_tokens: route === "debrief" ? 600 : 300, system: prompt.system, messages: [{ role: "user", content: prompt.user }] }),
+        body: JSON.stringify({ model, max_tokens: route === "debrief" || route === "ask" ? 600 : 300, system: prompt.system, messages: [{ role: "user", content: prompt.user }] }),
         signal: controller.signal,
       });
     } finally {

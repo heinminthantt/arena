@@ -19,8 +19,8 @@ import {
 } from "@/lib/content";
 import { FeedbackPanel, Objective, PlayerHud } from "@/components/GamePrimitives";
 import {
-  BoltIcon, BookIcon, ChatIcon, CheckIcon, EyeIcon, GearIcon, HomeIcon,
-  ImageIcon, KeyIcon, LinkIcon, LockIcon, PhoneIcon, RobotIcon, ShieldIcon,
+  BoltIcon, BookIcon, ChatIcon, CheckIcon, CloseIcon, EyeIcon, HomeIcon,
+  ImageIcon, KeyIcon, LinkIcon, LockIcon, MenuIcon, PhoneIcon, RobotIcon, ShieldIcon,
   SkullIcon, StarIcon, TrophyIcon, UsersIcon,
 } from "@/components/icons";
 import { LessonBox } from "@/components/games/shared";
@@ -56,14 +56,15 @@ const pageIcon = (id: string, size = 26) => {
   return I ? <I size={size} /> : <StarIcon size={size} />;
 };
 
-/* Journey trail: a snake across two rows, ending at the Boss Fight. */
+/* Journey trail: the scored games only, a snake ending at the Boss Fight.
+   Standalone tools (Password Roast, Q&A) stay in the sidebar and home cards. */
 const JOURNEY: { id: string; x: number; y: number }[] = [
   { id: "start", x: 6, y: 25 },
-  { id: "scam", x: 18.5, y: 25 }, { id: "rush", x: 31, y: 25 }, { id: "vault", x: 43.5, y: 25 },
-  { id: "link", x: 56, y: 25 }, { id: "roast", x: 68.5, y: 25 }, { id: "privacy", x: 81, y: 25 },
+  { id: "scam", x: 20.6, y: 25 }, { id: "rush", x: 35.2, y: 25 }, { id: "vault", x: 49.8, y: 25 },
+  { id: "link", x: 64.3, y: 25 }, { id: "privacy", x: 78.9, y: 25 },
   { id: "permission", x: 93.5, y: 25 },
-  { id: "spot", x: 93.5, y: 75 }, { id: "deepfake", x: 81, y: 75 }, { id: "ask", x: 68.5, y: 75 },
-  { id: "call", x: 56, y: 75 }, { id: "friend", x: 43.5, y: 75 }, { id: "quiz", x: 31, y: 75 },
+  { id: "spot", x: 93.5, y: 75 }, { id: "deepfake", x: 77.6, y: 75 },
+  { id: "call", x: 61.7, y: 75 }, { id: "friend", x: 45.8, y: 75 }, { id: "quiz", x: 29.9, y: 75 },
   { id: "boss", x: 14, y: 75 },
 ];
 
@@ -78,6 +79,7 @@ export default function ArenaApp() {
   /* transient UI state (never stored) */
   const [scamBusy, setScamBusy] = useState(false);
   const [askBusy, setAskBusy] = useState(false);
+  const [mobileNav, setMobileNav] = useState(false);
   const [vaultBusy, setVaultBusy] = useState(false);
   const [vaultInput, setVaultInput] = useState("");
   const [vaultLive, setVaultLive] = useState<string | null>(null);
@@ -117,6 +119,23 @@ export default function ArenaApp() {
     if (idx > prevRank.current) setCeleb(idx);
     prevRank.current = idx;
   }, [S]);
+
+  /* mobile drawer: Escape closes it and the page behind does not scroll */
+  useEffect(() => {
+    if (!mobileNav) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMobileNav(false); };
+    document.addEventListener("keydown", onKey);
+    const desktop = window.matchMedia("(min-width: 1101px)");
+    const onResize = () => { if (desktop.matches) setMobileNav(false); };
+    desktop.addEventListener("change", onResize);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      desktop.removeEventListener("change", onResize);
+      document.body.style.overflow = prev;
+    };
+  }, [mobileNav]);
 
   if (!S) {
     return (
@@ -211,7 +230,7 @@ export default function ArenaApp() {
     const rows = S.records.filter(r => r.page === page).slice(0, 8);
     if (!rows.length) return null;
     return (
-      <div className="pv-card mt-6 bg-white p-7">
+      <div className="pv-card mt-6 bg-white p-4 sm:p-7">
         <h3 className="mb-4 text-2xl font-black">📒 {t("playAgain")}</h3>
         <div className="flex flex-col gap-3">
           {rows.map((r, i) => (
@@ -228,14 +247,14 @@ export default function ArenaApp() {
   const PageHead = ({ id, icon }: { id: string; icon: ReactNode }) => {
     const c = SECTION_COLORS[id] ?? SECTION_COLORS.home;
     return (
-      <div className="mb-6 flex flex-wrap items-center gap-5">
-        <span className="flex h-[76px] w-[76px] shrink-0 items-center justify-center rounded-[24px] text-white"
-          style={{ background: `linear-gradient(180deg, ${c.color}, ${c.shade})`, boxShadow: `0 6px 0 ${c.shade}` }}>
+      <div className="mb-4 flex flex-wrap items-center gap-3 sm:mb-6 sm:gap-5">
+        <span className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[18px] text-white sm:h-[76px] sm:w-[76px] sm:rounded-[24px]"
+          style={{ background: `linear-gradient(180deg, ${c.color}, ${c.shade})`, boxShadow: `0 5px 0 ${c.shade}` }}>
           {icon}
         </span>
-        <div className="min-w-[280px] flex-1">
-          <h2 className="text-[42px] font-black leading-tight text-white" style={{ textShadow: "0 3px 0 rgba(23,15,66,0.25)" }}>{t(id)}</h2>
-          <p className="max-w-4xl text-[20px] font-semibold leading-relaxed text-white/85">{t(id + "Sub")}</p>
+        <div className="min-w-0 flex-1">
+          <h2 className="break-words text-[27px] font-black leading-tight text-white sm:text-[42px]" style={{ textShadow: "0 3px 0 rgba(23,15,66,0.25)" }}>{t(id)}</h2>
+          <p className="max-w-4xl text-[16px] font-semibold leading-relaxed text-white/85 sm:text-[20px]">{t(id + "Sub")}</p>
         </div>
       </div>
     );
@@ -245,13 +264,13 @@ export default function ArenaApp() {
     count: number, current: number, doneMap: (i: number) => boolean,
     onPick: (i: number) => void, label: string, color: string, shade: string,
   ) => (
-    <div className="mb-5 flex flex-wrap gap-3" role="navigation" aria-label={label}>
+    <div className="mb-5 flex flex-wrap gap-2 sm:gap-3" role="navigation" aria-label={label}>
       {Array.from({ length: count }, (_, d) => (
         <button
           key={d}
           onClick={() => onPick(d)}
           aria-label={`${label} ${d + 1}`}
-          className="flex h-[72px] w-[72px] items-center justify-center rounded-full text-[22px] font-black text-white transition-transform active:scale-95"
+          className="flex h-[52px] w-[52px] items-center justify-center rounded-full text-[18px] font-black text-white transition-transform active:scale-95 sm:h-[72px] sm:w-[72px] sm:text-[22px]"
           style={d === current
             ? { background: color, boxShadow: `0 6px 0 ${shade}, 0 0 0 5px rgba(255,255,255,0.85)` }
             : doneMap(d)
@@ -281,18 +300,18 @@ export default function ArenaApp() {
       <>
         <div className="relative overflow-hidden rounded-[28px] bg-white/10 px-2 pb-2 pt-1">
           <div className="flex flex-wrap items-center gap-8">
-            <div className="min-w-[320px] flex-1">
-              <span className="inline-block rounded-full bg-white/25 px-5 py-2.5 text-lg font-black tracking-wide text-white shadow-[0_4px_0_rgba(23,15,66,0.2)] backdrop-blur-sm">
+            <div className="min-w-0 flex-1 basis-[420px]">
+              <span className="inline-block rounded-full bg-white/25 px-4 py-2 text-sm font-black tracking-wide text-white shadow-[0_4px_0_rgba(23,15,66,0.2)] backdrop-blur-sm sm:px-5 sm:py-2.5 sm:text-lg">
                 UCS MAGWAY · IT &amp; CYBER YOUTH PANEL
               </span>
-              <h2 className="mt-5 text-[84px] font-black leading-[1.02] text-white" style={{ textShadow: "0 5px 0 rgba(23,15,66,0.28)" }}>
+              <h2 className="mt-4 text-[clamp(44px,8vw,84px)] font-black leading-[1.02] text-white sm:mt-5" style={{ textShadow: "0 5px 0 rgba(23,15,66,0.28)" }}>
                 CyberShield<br />Arena
               </h2>
-              <p className="mt-4 max-w-[640px] rounded-[22px] bg-white/90 p-5 text-[22px] font-semibold leading-relaxed text-[#2b2140] shadow-[0_6px_0_rgba(23,15,66,0.18)]">
+              <p className="mt-4 max-w-[640px] rounded-[22px] bg-white/90 p-4 text-[18px] font-semibold leading-relaxed text-[#2b2140] shadow-[0_6px_0_rgba(23,15,66,0.18)] sm:p-5 sm:text-[22px]">
                 {t("homeSub")}
               </p>
             </div>
-            <div className="relative h-[300px] w-[330px] shrink-0 max-[700px]:hidden">
+            <div className="relative h-[300px] w-[330px] max-w-full shrink-0 max-[900px]:hidden">
               <div className="pv-card absolute left-[36px] top-[14px] bg-white p-2">
                 <Image src="/assets/asset-shield.webp" alt="Voxel shield" width={230} height={230} className="rounded-[20px] object-contain" priority />
               </div>
@@ -325,11 +344,6 @@ export default function ArenaApp() {
               const w = [0, 1, 2].filter(l => S.vault.won[l]).length;
               return w >= 3 ? "done" : (S.vault.log.length > 0 || w > 0) ? "doing" : "todo";
             }
-            if (id === "roast") {
-              return S.roast.history.some(h => h.score >= 3) ? "done"
-                : S.roast.history.length > 0 ? "doing" : "todo";
-            }
-            if (id === "ask") return S.ask.history.length > 0 ? "done" : "todo";
             if (id === "quiz") {
               const n = Object.keys(S.quiz.answers).length;
               return n === 0 ? "todo" : n >= QUIZ.length ? "done" : "doing";
@@ -346,11 +360,11 @@ export default function ArenaApp() {
             st === "done" ? t("stateDone") : st === "doing" ? t("stateDoing") : t("stateTodo");
           return (
             <div className="pv-card mb-6 overflow-hidden bg-white">
-              <div className="px-8 pb-1 pt-7">
-                <h3 className="text-[36px] font-black">🗺️ {t("journey")}</h3>
-                <p className="mt-1 max-w-4xl text-[19px] font-semibold leading-relaxed text-[#5b5872]">{t("journeySub")}</p>
+              <div className="px-5 pb-1 pt-6 sm:px-8 sm:pt-7">
+                <h3 className="text-[27px] font-black sm:text-[36px]">🗺️ {t("journey")}</h3>
+                <p className="mt-1 max-w-4xl text-[17px] font-semibold leading-relaxed text-[#5b5872] sm:text-[19px]">{t("journeySub")}</p>
               </div>
-              <div className="relative h-[400px]">
+              <div className="relative hidden h-[400px] min-[900px]:block">
                 <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
                   <path
                     d="M 72 100 L 1122 100 C 1178 100 1178 300 1122 300 L 168 300"
@@ -408,11 +422,36 @@ export default function ArenaApp() {
                   );
                 })}
               </div>
+              {/* Phones get the same trail as a vertical list, no overlapping nodes */}
+              <div className="flex flex-col gap-2 px-4 pb-5 min-[900px]:hidden">
+                {JOURNEY.filter(stop => stop.id !== "start").map(stop => {
+                  const st = stopState(stop.id);
+                  const c = SECTION_COLORS[stop.id] ?? SECTION_COLORS.home;
+                  return (
+                    <button key={stop.id} onClick={() => go(stop.id)}
+                      className="flex items-center gap-3 rounded-[16px] bg-[#f6f4fc] px-3 py-2.5 text-left active:scale-[.99]">
+                      <span className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full text-white"
+                        style={{
+                          background: st === "done" ? `linear-gradient(180deg, ${c.color}, ${c.shade})`
+                            : st === "doing" ? "linear-gradient(180deg,#ffd93b,#ffc800)" : "#ffffff",
+                          color: st === "todo" ? "#8a87a0" : "#ffffff",
+                          boxShadow: `0 4px 0 ${st === "todo" ? "rgba(23,15,66,0.15)" : c.shade}`,
+                        }}>
+                        {pageIcon(stop.id, 22)}
+                      </span>
+                      <span className="min-w-0 flex-1 text-[17px] font-extrabold leading-tight">{t(stop.id)}</span>
+                      <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[12px] font-extrabold ${stateChip(st)}`}>
+                        {stateText(st)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           );
         })()}
 
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-5">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-5">
           {PAGES.filter(p => p.id !== "home").map(p => {
             const c = SECTION_COLORS[p.id] ?? SECTION_COLORS.home;
             const prog = done(p.id);
@@ -420,7 +459,7 @@ export default function ArenaApp() {
               <button
                 key={p.id}
                 onClick={() => go(p.id)}
-                className="pv-card relative bg-white p-7 text-left transition-transform hover:-translate-y-1 active:scale-[.98]"
+                className="pv-card relative bg-white p-5 text-left transition-transform hover:-translate-y-1 active:scale-[.98] sm:p-7"
               >
                 {NEW_GAME_IDS.has(p.id) ? (
                   <span className="absolute right-5 top-5 rounded-full bg-[#ff4b4b] px-3 py-1 text-[13px] font-black tracking-widest text-white shadow-[0_3px_0_#d33131]">NEW</span>
@@ -480,22 +519,22 @@ export default function ArenaApp() {
         <Objective>{lang === "my" ? "အထောက်အထားကို ရွေးပြီး လုံခြုံတဲ့ လုပ်ဆောင်ချက်ကို ဆုံးဖြတ်ပါ။" : "Inspect the evidence, classify the threat, and choose the safest action."}</Objective>
         {dots(CARDS.length, i, d => !!S.scam.revealed[d],
           d => mut(dd => { dd.scam.index = d; dd.scam.vote = null; }), "Card", "#58cc02", "#46a302")}
-        <div className="pv-card bg-white p-8">
-          <div className="whitespace-pre-wrap rounded-[20px] border-[3px] border-dashed border-[#d9d4f5] bg-[#faf9ff] p-7 text-[31px] font-medium leading-[1.7]">
+        <div className="pv-card bg-white p-5 sm:p-8">
+          <div className="whitespace-pre-wrap rounded-[20px] border-[3px] border-dashed border-[#d9d4f5] bg-[#faf9ff] p-5 text-[23px] font-medium leading-[1.7] sm:p-7 sm:text-[31px]">
             {lang === "my" ? c.my : c.en}
           </div>
-          <div className="mt-6 flex flex-wrap items-center gap-4">
-            <span className="text-[22px] font-bold">{t("classSaid")}:</span>
+          <div className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
+            <span className="text-[20px] font-bold sm:text-[22px]">{t("classSaid")}:</span>
             <button data-testid="scam-vote-scam" onClick={() => vote("scam")}
-              className="pv-btn min-h-[76px] px-9 text-[25px]" style={{ background: "#ff4b4b", ["--pv-shade" as string]: "#d33131" }}>
+              className="pv-btn min-h-[60px] px-6 text-[20px] sm:min-h-[76px] sm:px-9 sm:text-[25px]" style={{ background: "#ff4b4b", ["--pv-shade" as string]: "#d33131" }}>
               {t("scamBtn")}
             </button>
             <button data-testid="scam-vote-safe" onClick={() => vote("safe")}
-              className="pv-btn min-h-[76px] px-9 text-[25px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>
+              className="pv-btn min-h-[60px] px-6 text-[20px] sm:min-h-[76px] sm:px-9 sm:text-[25px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>
               {t("safeBtn")}
             </button>
             <button data-testid="scam-ask-ai" onClick={askAi} disabled={scamBusy}
-              className="pv-btn min-h-[76px] px-9 text-[25px] disabled:opacity-45" style={{ background: "#2b2140", ["--pv-shade" as string]: "#17102e" }}>
+              className="pv-btn min-h-[60px] px-6 text-[20px] disabled:opacity-45 sm:min-h-[76px] sm:px-9 sm:text-[25px]" style={{ background: "#2b2140", ["--pv-shade" as string]: "#17102e" }}>
               {t("askAi")}
             </button>
             {S.scam.vote && !rev ? (
@@ -507,7 +546,7 @@ export default function ArenaApp() {
           {scamBusy ? <div className="mt-5 text-2xl font-bold text-[#ff9600]">{t("thinking")}</div> : null}
           {rev && !scamBusy ? (
             <div className="mt-6" data-testid="scam-reveal">
-              <div className={`text-[42px] font-black ${rev.verdict === "scam" ? "text-[#d33131]" : "text-[#46a302]"}`}>
+              <div className={`break-words text-[32px] font-black sm:text-[42px] ${rev.verdict === "scam" ? "text-[#d33131]" : "text-[#46a302]"}`}>
                 {rev.verdict === "scam" ? "⚠ " + t("scamBtn") : "✓ " + t("safeBtn")}
               </div>
               <div className="mt-1 text-[21px] font-semibold text-[#5b5872]">
@@ -517,7 +556,7 @@ export default function ArenaApp() {
               <div className="mt-4 text-[24px] font-extrabold">
                 {rev.verdict === "scam" ? t("redFlags") : t("whySafe")}
               </div>
-              <ul className="ml-6 mt-2 list-disc text-[23px] leading-[1.75]">
+              <ul className="ml-6 mt-2 list-disc text-[19px] leading-[1.75] sm:text-[23px]">
                 {rev.flags.map((f, fi) => <li key={fi}>{f}</li>)}
               </ul>
               {liveNote ? <FeedbackPanel title={liveNote} tone="sky">{lang === "my" ? "အဖြေကို အတန်းအတွက် လုံခြုံရေးသင်ခန်းစာအဖြစ် အသုံးပြုပါ။" : "Use this explanation as a defensive learning aid; the lesson verdict remains authoritative."}</FeedbackPanel> : null}
@@ -565,7 +604,7 @@ export default function ArenaApp() {
         <Objective>{lang === "my" ? "ဘော့ရဲ့ လျှို့ဝှက်ချက်ကို ကာကွယ်တဲ့ စည်းမျဉ်းကို ရှာပါ။" : "Identify the manipulation attempt and design a safer response."}</Objective>
 
         {/* How to play: the panel from the approved preview */}
-        <div className="pv-card mb-6 bg-white px-8 py-7">
+        <div className="pv-card mb-6 bg-white px-5 py-6 sm:px-8 sm:py-7">
           <h3 className="text-[26px] font-black">🎯 {t("vaultHowTitle")}</h3>
           <p className="mt-2 max-w-4xl text-[21px] font-semibold leading-relaxed text-[#3c3a55]">{t("vaultHowBody")}</p>
           <div className="mt-5 grid gap-4 md:grid-cols-3">
@@ -610,17 +649,17 @@ export default function ArenaApp() {
           ))}
         </div>
 
-        <div className="pv-card bg-white p-8">
+        <div className="pv-card bg-white p-5 sm:p-8">
           <div className="flex flex-wrap items-center gap-4">
             <input
               type="text" value={vaultInput} maxLength={200}
               onChange={e => setVaultInput(e.target.value)}
               onKeyDown={e => { if (e.key === "Enter") send(); }}
               placeholder={t("tryIt") + "..."}
-              className="pv-input min-h-[76px] min-w-[280px] flex-1 text-[24px]"
+              className="pv-input min-h-[64px] min-w-0 flex-1 text-[20px] sm:min-h-[76px] sm:text-[24px]"
             />
             <button data-testid="vault-send" onClick={send} disabled={vaultBusy}
-              className="pv-btn min-h-[76px] px-9 text-[25px] disabled:opacity-45" style={{ background: "#a560e8", ["--pv-shade" as string]: "#8c4fd6" }}>
+              className="pv-btn min-h-[64px] px-7 text-[21px] disabled:opacity-45 sm:min-h-[76px] sm:px-9 sm:text-[25px]" style={{ background: "#a560e8", ["--pv-shade" as string]: "#8c4fd6" }}>
               {t("send")}
             </button>
           </div>
@@ -682,20 +721,17 @@ export default function ArenaApp() {
       <>
         <PageHead id="roast" icon={<KeyIcon size={42} />} />
         <Objective>{lang === "my" ? "Password အတုနဲ့ အကောင့်ကာကွယ်မှုကို မြှင့်တင်ပါ။" : "Build a long, unique identity defense without entering a real password."}</Objective>
-        <div className="pv-card bg-white p-8">
-          <div className="rounded-[18px] bg-[#fff3c4] px-5 py-3.5 text-[20px] font-bold text-[#7a5200]">
-            ⚠ {lang === "my" ? "စကားဝှက် အတု သာ သုံးပါ" : "Use fake passwords only"}
-          </div>
-          <div className="mt-5 flex flex-wrap items-center gap-4">
+        <div className="pv-card bg-white p-5 sm:p-8">
+          <div className="flex flex-wrap items-center gap-4">
             <input
               type="text" value={pwInput}
               onChange={e => setPwInput(e.target.value)}
               onKeyDown={e => { if (e.key === "Enter") check(); }}
               placeholder="aung123 / blue-elephant-river-42"
-              className="pv-input min-h-[76px] min-w-[280px] flex-1 text-[24px]"
+              className="pv-input min-h-[64px] min-w-0 flex-1 text-[20px] sm:min-h-[76px] sm:text-[24px]"
             />
             <button data-testid="roast-check" onClick={check}
-              className="pv-btn min-h-[76px] px-9 text-[25px]" style={{ background: "#ff9600", ["--pv-shade" as string]: "#e08600" }}>
+              className="pv-btn min-h-[64px] px-7 text-[21px] sm:min-h-[76px] sm:px-9 sm:text-[25px]" style={{ background: "#ff9600", ["--pv-shade" as string]: "#e08600" }}>
               {t("checkPw")}
             </button>
           </div>
@@ -717,7 +753,7 @@ export default function ArenaApp() {
             </div>
           ) : null}
         </div>
-        <div className="pv-card mt-6 bg-white p-7">
+        <div className="pv-card mt-6 bg-white p-4 sm:p-7">
           <h3 className="mb-4 text-2xl font-black">History</h3>
           <div className="flex flex-col gap-3">
             {S.roast.history.slice(0, 6).map((h, hi) => (
@@ -747,7 +783,7 @@ export default function ArenaApp() {
       mut(d => {
         d.ask.history.unshift({ q, a: r.answer!, source: r.source, time: now() });
         log(d, "ask", "question answered", q);
-        logXp(d, xpFlat(d, XP.askQuestion), "Ask the Hacker question");
+        logXp(d, xpFlat(d, XP.askQuestion), "Q&A question");
         logBadges(d);
       });
       setAskInput("");
@@ -756,8 +792,8 @@ export default function ArenaApp() {
     return (
       <>
         <PageHead id="ask" icon={<ChatIcon size={42} />} />
-        <Objective>{lang === "my" ? "ဖြစ်ရပ်ကို ရပ်တန့်၊ အထောက်အထားသိမ်း၊ အကောင့်ကာကွယ်ပြီး သတင်းပို့ပါ။" : "Practice the correct incident-response order: stop, preserve evidence, secure, and report."}</Objective>
-        <div className="pv-card bg-white p-8">
+        <Objective>{lang === "my" ? "ဆိုက်ဘာ လုံခြုံရေး သို့မဟုတ် အွန်လိုင်း ဘေးကင်းရေး အကြောင်း မေးပါ။ ရိုးရှင်းတဲ့ ဘာသာနဲ့ ဖြေပေးပါမယ်။" : "Ask anything about cybersecurity or staying safe online. Answers come back in plain language."}</Objective>
+        <div className="pv-card bg-white p-5 sm:p-8">
           <textarea
             value={askInput} maxLength={300}
             onChange={e => setAskInput(e.target.value)}
@@ -770,7 +806,7 @@ export default function ArenaApp() {
           </button>
           {askBusy ? <div className="mt-5 text-2xl font-bold text-[#ff9600]">{t("thinking")}</div> : null}
         </div>
-        <div className="pv-card mt-6 bg-white p-7">
+        <div className="pv-card mt-6 bg-white p-4 sm:p-7">
           <h3 className="mb-4 text-2xl font-black">History</h3>
           <div className="flex flex-col gap-3">
             {S.ask.history.slice(0, 6).map((h, hi) => (
@@ -803,15 +839,15 @@ export default function ArenaApp() {
       <>
         <PageHead id="quiz" icon={<TrophyIcon size={42} />} />
         <Objective>{lang === "my" ? "အထောက်အထားနဲ့ ဆုံးဖြတ်ချက်ကို အသုံးပြုပြီး Cyber Defense Command ကို ပြီးမြောက်ပါ။" : "Combine threat analysis, identity defense, privacy, and incident response in the final command."}</Objective>
-        <div className="pv-card relative mb-6 overflow-hidden p-8 text-white" style={{ background: "linear-gradient(120deg,#ff4b4b,#ff9600)" }}>
-          <span className="absolute right-7 top-6 rounded-full bg-white px-4 py-1.5 text-[16px] font-black tracking-widest text-[#d33131] shadow-[0_4px_0_rgba(23,15,66,0.25)]" style={{ transform: "rotate(4deg)" }}>
+        <div className="pv-card relative mb-6 overflow-hidden p-5 pt-12 text-white sm:p-8" style={{ background: "linear-gradient(120deg,#ff4b4b,#ff9600)" }}>
+          <span className="absolute right-4 top-4 rounded-full bg-white px-3 py-1 text-[13px] font-black tracking-widest text-[#d33131] shadow-[0_4px_0_rgba(23,15,66,0.25)] sm:right-7 sm:top-6 sm:px-4 sm:py-1.5 sm:text-[16px]" style={{ transform: "rotate(4deg)" }}>
             👑 {t("stopBoss")}
           </span>
-          <div className="flex flex-wrap items-center gap-6">
-            <Image src="/assets/asset-trophy.webp" alt="" width={110} height={110} className="h-[110px] w-[110px] rounded-[22px] bg-white/90 object-contain p-1.5" />
-            <div className="min-w-[300px] flex-1">
-              <h2 className="text-[46px] font-black leading-tight" style={{ textShadow: "0 3px 0 rgba(23,15,66,0.25)" }}>{t("bossHead")}</h2>
-              <p className="mt-2 max-w-4xl text-[22px] font-semibold leading-relaxed text-white/90">{t("quizSub")}</p>
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <Image src="/assets/asset-trophy.webp" alt="" width={110} height={110} className="h-[72px] w-[72px] rounded-[18px] bg-white/90 object-contain p-1.5 sm:h-[110px] sm:w-[110px] sm:rounded-[22px]" />
+            <div className="min-w-0 flex-1">
+              <h2 className="break-words text-[28px] font-black leading-tight sm:text-[46px]" style={{ textShadow: "0 3px 0 rgba(23,15,66,0.25)" }}>{t("bossHead")}</h2>
+              <p className="mt-2 max-w-4xl text-[18px] font-semibold leading-relaxed text-white/90 sm:text-[22px]">{t("quizSub")}</p>
             </div>
           </div>
           {!warmedUp ? (
@@ -822,8 +858,8 @@ export default function ArenaApp() {
         </div>
         {dots(total, i, d => S.quiz.answers[d] !== undefined,
           d => mut(dd => { dd.quiz.index = d; }), "Question", "#ff4b4b", "#d33131")}
-        <div className="pv-card bg-white p-8">
-          <div className="whitespace-pre-wrap rounded-[20px] border-[3px] border-dashed border-[#d9d4f5] bg-[#faf9ff] p-7 text-[31px] font-medium leading-[1.7]">
+        <div className="pv-card bg-white p-5 sm:p-8">
+          <div className="whitespace-pre-wrap rounded-[20px] border-[3px] border-dashed border-[#d9d4f5] bg-[#faf9ff] p-5 text-[23px] font-medium leading-[1.7] sm:p-7 sm:text-[31px]">
             {lang === "my" ? q.qMy : q.qEn}
           </div>
           <div className="mt-6 flex flex-wrap gap-4">
@@ -844,7 +880,7 @@ export default function ArenaApp() {
                     else xpForWrong(d);
                     logBadges(d);
                   })}
-                  className="pv-btn min-h-[76px] px-8 text-[23px] disabled:opacity-95" style={style}>
+                  className="pv-btn min-h-[60px] max-w-full whitespace-normal px-5 text-left text-[19px] disabled:opacity-95 sm:min-h-[76px] sm:px-8 sm:text-[23px]" style={style}>
                   {o}
                 </button>
               );
@@ -863,7 +899,7 @@ export default function ArenaApp() {
           </div>
         </div>
         {rank ? (
-          <div className="pv-card mt-6 bg-white p-8">
+          <div className="pv-card mt-6 bg-white p-5 sm:p-8">
             <div className="text-[40px] font-black text-[#46a302]">{t("finalRank")}: {rank}</div>
             <div className="mt-3 rounded-[20px] bg-[#e9fbe0] px-6 py-5 text-[23px] font-semibold leading-relaxed">
               {correct} / {total} correct. Final 3 actions: strong passphrase, turn on 2FA, check the address before clicking.
@@ -889,16 +925,16 @@ export default function ArenaApp() {
         <PageHead id="records" icon={<BookIcon size={42} />} />
         <div className="mb-6 flex flex-wrap gap-4">
           <button onClick={exportJson}
-            className="pv-btn min-h-[72px] px-8 text-[23px]" style={{ background: "#2b2140", ["--pv-shade" as string]: "#17102e" }}>
+            className="pv-btn min-h-[60px] max-w-full whitespace-normal px-5 text-[19px] sm:min-h-[72px] sm:px-8 sm:text-[23px]" style={{ background: "#2b2140", ["--pv-shade" as string]: "#17102e" }}>
             {t("exportBtn")}
           </button>
         </div>
 
         {/* Badge shelf: earned badges in colour, the rest waiting in grey */}
-        <div className="pv-card mb-8 bg-white p-7">
-          <h3 className="text-[30px] font-black">🏅 {t("badges")}</h3>
-          <p className="mb-5 mt-1 text-[19px] font-semibold leading-relaxed text-[#5b5872]">{t("badgesSub")}</p>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
+        <div className="pv-card mb-8 bg-white p-4 sm:p-7">
+          <h3 className="text-[26px] font-black sm:text-[30px]">🏅 {t("badges")}</h3>
+          <p className="mb-5 mt-1 text-[17px] font-semibold leading-relaxed text-[#5b5872] sm:text-[19px]">{t("badgesSub")}</p>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-4">
             {BADGES.map((b, bi) => {
               const has = !!S.game.badges[b.id];
               const col = BADGE_COLORS[bi % BADGE_COLORS.length];
@@ -928,8 +964,8 @@ export default function ArenaApp() {
             })}
           </div>
         </div>
-        <div className="pv-card overflow-x-auto bg-white p-7">
-          <table className="w-full border-collapse text-[19px]">
+        <div className="pv-card overflow-x-auto bg-white p-4 sm:p-7">
+          <table className="w-full min-w-[620px] border-collapse text-[19px]">
             <thead>
               <tr>
                 {["Time", "Page", "Action", "Detail"].map(h => (
@@ -972,10 +1008,68 @@ export default function ArenaApp() {
     boss: () => <BossFightGame ctx={ctx} />,
   };
 
+  const navList = (close?: () => void) => (
+    <nav className="flex flex-col gap-2.5">
+      {PAGES.map(p => {
+        const c = SECTION_COLORS[p.id] ?? SECTION_COLORS.home;
+        const active = S.page === p.id;
+        return (
+          <button
+            key={p.id}
+            data-testid={close ? `mobile-nav-${p.id}` : `nav-${p.id}`}
+            onClick={() => { navTo(p.id); close?.(); }}
+            className={`pv-nav min-h-[64px] ${active ? "" : "pv-nav-idle"}`}
+            style={active ? { background: c.color, ["--pv-shade" as string]: c.shade, color: "#ffffff" } : undefined}
+          >
+            <span className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[13px] bg-white/25">
+              {pageIcon(p.id, 24)}
+            </span>
+            <span className="min-w-0 flex-1 leading-tight">{t(p.id)}</span>
+            {NEW_GAME_IDS.has(p.id) ? (
+              <span className="rounded-full bg-[#ff4b4b] px-2 py-0.5 text-[11px] font-black tracking-widest text-white">NEW</span>
+            ) : null}
+          </button>
+        );
+      })}
+    </nav>
+  );
+
+  const langReset = (close?: () => void) => (
+    <>
+      <div className="flex gap-2">
+        <button onClick={() => setLang("en")}
+          className={`pv-nav min-h-[56px] flex-1 justify-center ${lang === "en" ? "" : "pv-nav-idle"}`}
+          style={lang === "en" ? { background: "#2b2140", ["--pv-shade" as string]: "#17102e", color: "#fff" } : undefined}>EN</button>
+        <button onClick={() => setLang("my")}
+          className={`pv-nav min-h-[56px] flex-1 justify-center ${lang === "my" ? "" : "pv-nav-idle"}`}
+          style={lang === "my" ? { background: "#2b2140", ["--pv-shade" as string]: "#17102e", color: "#fff" } : undefined}>မြန်မာ</button>
+      </div>
+      <button onClick={() => { resetAll(); close?.(); }}
+        className="pv-btn min-h-[56px] bg-[#ffe3e3] px-4 text-[17px] text-[#b3261e]" style={{ ["--pv-shade" as string]: "#f3b8b8" }}>
+        Reset all records
+      </button>
+    </>
+  );
+
   return (
-    <div className="pv-root flex max-[1100px]:flex-col">
-      {/* Sidebar: every section, one tap, always visible */}
-      <aside className="sticky top-0 flex h-screen w-[320px] shrink-0 flex-col gap-2.5 overflow-y-auto p-5 max-[1100px]:static max-[1100px]:h-auto max-[1100px]:w-full">
+    <div className="pv-root flex flex-col min-[1101px]:flex-row">
+      {/* Mobile top bar: logo, current tally, hamburger */}
+      <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-white/15 bg-[#2b2140]/95 px-4 py-3 backdrop-blur min-[1101px]:hidden">
+        <button onClick={() => setMobileNav(true)} aria-label="Open menu" aria-expanded={mobileNav} aria-controls="mobile-nav"
+          className="pv-btn h-[48px] w-[48px] shrink-0 p-0" style={{ background: "rgba(255,255,255,0.16)", ["--pv-shade" as string]: "rgba(0,0,0,0.3)" }}>
+          <MenuIcon size={26} />
+        </button>
+        <span className="flex min-w-0 items-center gap-2 text-[18px] font-black text-white">
+          <Image src="/assets/asset-shield.webp" alt="" width={34} height={34} className="h-[34px] w-[34px] shrink-0 rounded-[10px] bg-white object-contain p-0.5" />
+          <span className="truncate">CyberShield</span>
+        </span>
+        <span className="ml-auto shrink-0 rounded-full bg-white/15 px-3 py-1 text-[14px] font-black text-white">
+          {S.scores.students} – {S.scores.ai}
+        </span>
+      </header>
+
+      {/* Desktop sidebar: every section, one tap, always visible */}
+      <aside className="sticky top-0 hidden h-screen w-[320px] shrink-0 flex-col gap-2.5 overflow-y-auto p-5 min-[1101px]:flex">
         <div className="flex items-center gap-3 px-1 pb-2 pt-1">
           <span className="pv-card flex h-[74px] w-[74px] shrink-0 items-center justify-center bg-white p-1">
             <Image src="/assets/asset-shield.webp" alt="CyberShield Arena shield" width={62} height={62} className="rounded-[16px] object-contain" />
@@ -986,82 +1080,54 @@ export default function ArenaApp() {
           </div>
         </div>
 
-        <nav className="flex flex-col gap-2.5">
-          {PAGES.map(p => {
-            const c = SECTION_COLORS[p.id] ?? SECTION_COLORS.home;
-            const active = S.page === p.id;
-            return (
-              <button
-                key={p.id}
-                data-testid={`nav-${p.id}`}
-                onClick={() => navTo(p.id)}
-                className={`pv-nav min-h-[72px] ${active ? "" : "pv-nav-idle"}`}
-                style={active ? { background: c.color, ["--pv-shade" as string]: c.shade, color: "#ffffff" } : undefined}
-              >
-                <span className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[14px] bg-white/25">
-                  {pageIcon(p.id, 26)}
-                </span>
-                <span className="min-w-0 flex-1 leading-tight">{t(p.id)}</span>
-                {NEW_GAME_IDS.has(p.id) ? (
-                  <span className="rounded-full bg-[#ff4b4b] px-2 py-0.5 text-[11px] font-black tracking-widest text-white">NEW</span>
-                ) : null}
-              </button>
-            );
-          })}
-        </nav>
+        {navList()}
 
         <div className="flex-1" />
-        <div className="flex gap-2">
-          <button onClick={() => setLang("en")}
-            className={`pv-nav min-h-[64px] flex-1 justify-center ${lang === "en" ? "" : "pv-nav-idle"}`}
-            style={lang === "en" ? { background: "#2b2140", ["--pv-shade" as string]: "#17102e", color: "#fff" } : undefined}>EN</button>
-          <button onClick={() => setLang("my")}
-            className={`pv-nav min-h-[64px] flex-1 justify-center ${lang === "my" ? "" : "pv-nav-idle"}`}
-            style={lang === "my" ? { background: "#2b2140", ["--pv-shade" as string]: "#17102e", color: "#fff" } : undefined}>မြန်မာ</button>
-        </div>
-        <button onClick={resetAll}
-          className="pv-btn min-h-[64px] bg-[#ffe3e3] px-4 text-[17px] text-[#b3261e]" style={{ ["--pv-shade" as string]: "#f3b8b8" }}>
-          Reset all records
-        </button>
+        {langReset()}
       </aside>
 
       {/* Main column */}
-      <main className="min-w-0 flex-1 px-7 pb-10 pt-6">
-        <div className="mb-6 flex flex-wrap items-stretch gap-4">
-          <div className="pv-card flex min-w-[280px] flex-1 items-center justify-between bg-white px-6 py-4">
+      <main className="min-w-0 flex-1 px-4 pb-10 pt-4 sm:px-7 sm:pt-6">
+        <div className="mb-3 flex items-stretch gap-2 sm:mb-6 sm:flex-wrap sm:gap-4">
+          <div className="pv-card flex min-w-0 flex-1 flex-col justify-between gap-2 bg-white px-3 py-3 sm:flex-row sm:items-center sm:gap-3 sm:px-6 sm:py-4">
             <div>
-              <div className="text-[21px] font-bold text-[#5b5872]">{t("students")}</div>
-              <div className="text-[58px] font-black leading-none text-[#46a302]" data-testid="score-students">{S.scores.students}</div>
+              <div className="text-[13px] font-bold leading-tight text-[#5b5872] sm:text-[21px]">{t("students")}</div>
+              <div className="text-[32px] font-black leading-none text-[#46a302] sm:text-[58px]" data-testid="score-students">{S.scores.students}</div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 sm:gap-2">
               <button onClick={() => adj("students", -1)} aria-label="Students minus"
-                className="pv-btn h-[68px] w-[68px] bg-[#f1eef9] text-[28px] text-[#2b2140]" style={{ ["--pv-shade" as string]: "#d9d4ec" }}>−</button>
+                className="pv-btn h-[38px] w-[38px] bg-[#f1eef9] text-[18px] text-[#2b2140] sm:h-[68px] sm:w-[68px] sm:text-[28px]" style={{ ["--pv-shade" as string]: "#d9d4ec" }}>−</button>
               <button onClick={() => adj("students", 1)} aria-label="Students plus"
-                className="pv-btn h-[68px] w-[68px] text-[28px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>+</button>
+                className="pv-btn h-[38px] w-[38px] text-[18px] sm:h-[68px] sm:w-[68px] sm:text-[28px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>+</button>
             </div>
           </div>
-          <div className="pv-card flex min-w-[280px] flex-1 items-center justify-between bg-white px-6 py-4">
+          <div className="pv-card flex min-w-0 flex-1 flex-col justify-between gap-2 bg-white px-3 py-3 sm:flex-row sm:items-center sm:gap-3 sm:px-6 sm:py-4">
             <div>
-              <div className="text-[21px] font-bold text-[#5b5872]">AI</div>
-              <div className="text-[58px] font-black leading-none text-[#1899d6]" data-testid="score-ai">{S.scores.ai}</div>
+              <div className="text-[13px] font-bold leading-tight text-[#5b5872] sm:text-[21px]">AI</div>
+              <div className="text-[32px] font-black leading-none text-[#1899d6] sm:text-[58px]" data-testid="score-ai">{S.scores.ai}</div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 sm:gap-2">
               <button onClick={() => adj("ai", -1)} aria-label="AI minus"
-                className="pv-btn h-[68px] w-[68px] bg-[#f1eef9] text-[28px] text-[#2b2140]" style={{ ["--pv-shade" as string]: "#d9d4ec" }}>−</button>
+                className="pv-btn h-[38px] w-[38px] bg-[#f1eef9] text-[18px] text-[#2b2140] sm:h-[68px] sm:w-[68px] sm:text-[28px]" style={{ ["--pv-shade" as string]: "#d9d4ec" }}>−</button>
               <button onClick={() => adj("ai", 1)} aria-label="AI plus"
-                className="pv-btn h-[68px] w-[68px] text-[28px]" style={{ background: "#1cb0f6", ["--pv-shade" as string]: "#1899d6" }}>+</button>
+                className="pv-btn h-[38px] w-[38px] text-[18px] sm:h-[68px] sm:w-[68px] sm:text-[28px]" style={{ background: "#1cb0f6", ["--pv-shade" as string]: "#1899d6" }}>+</button>
             </div>
           </div>
-          <div className="pv-card flex items-center gap-3 bg-white px-6 py-4 text-[18px] font-semibold text-[#5b5872]">
-            <span>{t("usage")}</span> <b className="text-[23px] text-[#2b2140]">{S.usage.calls}</b>
-            <span>·</span> <span>{t("tokens")}</span> <b className="text-[23px] text-[#2b2140]">{S.usage.tokens.toLocaleString()}</b>
+          <div className="pv-card hidden flex-wrap items-center gap-3 bg-white px-4 py-4 text-[16px] font-semibold text-[#5b5872] sm:flex sm:px-6 sm:text-[18px]">
+            <span>{t("usage")}</span> <b className="text-[21px] text-[#2b2140] sm:text-[23px]">{S.usage.calls}</b>
+            <span>·</span> <span>{t("tokens")}</span> <b className="text-[21px] text-[#2b2140] sm:text-[23px]">{S.usage.tokens.toLocaleString()}</b>
           </div>
         </div>
 
         {(() => {
           const rf = rankFor(S.game.xp);
           const pct = rf.next ? Math.min(100, Math.round((rf.into / rf.span) * 100)) : 100;
-          return <PlayerHud rank={lang === "my" ? rf.rank.my : rf.rank.en} xp={S.game.xp} next={rf.next ? `${rf.next.at - S.game.xp} ${t("xpToNext")}: ${lang === "my" ? rf.next.my : rf.next.en}` : null} pct={pct} streak={S.game.streak} best={S.game.bestStreak} label={t("shieldPoints")} streakLabel={t("streak")} bestLabel={t("bestStreak")} nextLabel={t("xpToNext")} maxLabel={t("maxRank")} icon={rf.rank.icon} />;
+          /* Mobile keeps the HUD on the home page only, so a game starts on screen. */
+          return (
+            <div className={S.page === "home" ? "" : "hidden min-[1101px]:block"}>
+              <PlayerHud rank={lang === "my" ? rf.rank.my : rf.rank.en} xp={S.game.xp} next={rf.next ? `${rf.next.at - S.game.xp} ${t("xpToNext")}: ${lang === "my" ? rf.next.my : rf.next.en}` : null} pct={pct} streak={S.game.streak} best={S.game.bestStreak} label={t("shieldPoints")} streakLabel={t("streak")} bestLabel={t("bestStreak")} nextLabel={t("xpToNext")} maxLabel={t("maxRank")} icon={rf.rank.icon} />
+            </div>
+          );
         })()}
 
         {(pages[S.page] || renderHome)()}
@@ -1073,6 +1139,30 @@ export default function ArenaApp() {
           <div className="mt-1.5 text-[16px] font-semibold text-white/60">UCS Magway · IT &amp; Cyber Youth Panel</div>
         </div>
       </main>
+
+      {/* Mobile drawer: same sections, language and reset as the sidebar */}
+      {mobileNav ? (
+        <div className="fixed inset-0 z-50 min-[1101px]:hidden">
+          <button aria-label="Close menu" onClick={() => setMobileNav(false)}
+            className="absolute inset-0 h-full w-full bg-[#17102e]/60" />
+          <div id="mobile-nav" role="dialog" aria-modal="true" aria-label="Main menu"
+            className="absolute inset-y-0 left-0 flex w-[86%] max-w-[340px] flex-col gap-2.5 overflow-y-auto bg-[#f7f5ff] p-4 shadow-[12px_0_40px_rgba(23,15,66,0.35)]">
+            <div className="mb-1 flex items-center justify-between gap-3">
+              <span className="flex min-w-0 items-center gap-2 text-[18px] font-black text-[#2b2140]">
+                <Image src="/assets/asset-shield.webp" alt="" width={34} height={34} className="h-[34px] w-[34px] shrink-0 rounded-[10px] bg-white object-contain p-0.5" />
+                <span className="truncate">CyberShield Arena</span>
+              </span>
+              <button onClick={() => setMobileNav(false)} aria-label="Close menu" autoFocus
+                className="pv-btn h-[44px] w-[44px] shrink-0 bg-[#eceaf6] p-0 text-[#2b2140]" style={{ ["--pv-shade" as string]: "#d9d4ec" }}>
+                <CloseIcon size={22} />
+              </button>
+            </div>
+            {navList(() => setMobileNav(false))}
+            <div className="flex-1" />
+            {langReset(() => setMobileNav(false))}
+          </div>
+        </div>
+      ) : null}
 
       {/* Level-up celebration: bright stamp + confetti, one big tap away */}
       {celeb !== null ? (() => {

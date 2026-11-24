@@ -105,7 +105,7 @@ export default function PermissionPanicGame({ ctx }: { ctx: GameCtx }) {
             <span className="text-[18px] font-bold text-white/85">{idx + 1} / {deck.length}</span>
           </div>
           <div className="pv-timer mb-5"><div className="pv-timer-fill" style={{ width: (timeLeft / ROUND_SECONDS) * 100 + "%" }} /></div>
-          <div key={idx} className="pv-card pv-rise bg-white px-9 py-8">
+          <div key={idx} className="pv-card pv-rise bg-white px-5 py-6 sm:px-9 sm:py-8">
             <div className="flex items-center gap-4">
               <span className="flex h-[64px] w-[64px] items-center justify-center rounded-[20px] bg-[#e9fbe0] text-[30px]">📱</span>
               <div>
@@ -122,13 +122,13 @@ export default function PermissionPanicGame({ ctx }: { ctx: GameCtx }) {
               </p>
             ) : null}
           </div>
-          <div className="mt-6 grid grid-cols-2 gap-5">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
             <button data-testid="perm-deny" onClick={() => answer(false)}
-              className="pv-btn min-h-[84px] text-[26px]" style={{ background: "#ff4b4b", ["--pv-shade" as string]: "#d33131" }}>
+              className="pv-btn min-h-[72px] text-[24px] sm:min-h-[84px] sm:text-[26px]" style={{ background: "#ff4b4b", ["--pv-shade" as string]: "#d33131" }}>
               ✗ {pick(lang, "DENY", "ငြင်းမယ်")}
             </button>
             <button data-testid="perm-allow" onClick={() => answer(true)}
-              className="pv-btn min-h-[84px] text-[26px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>
+              className="pv-btn min-h-[72px] text-[24px] sm:min-h-[84px] sm:text-[26px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>
               ✓ {pick(lang, "ALLOW", "ခွင့်ပြုမယ်")}
             </button>
           </div>

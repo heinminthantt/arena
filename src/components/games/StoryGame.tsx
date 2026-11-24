@@ -74,7 +74,7 @@ export default function StoryGame({ ctx, game, nodes, start, themLabel, accent, 
         </div>
       </div>
 
-      <div className="pv-card bg-white px-8 py-7">
+      <div className="pv-card bg-white px-5 py-6 sm:px-8 sm:py-7">
         <div className="flex flex-col gap-4">
           {history.map((e, i) => (
             e.who === "note" ? (

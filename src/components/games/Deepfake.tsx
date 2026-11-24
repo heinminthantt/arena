@@ -80,19 +80,19 @@ export default function DeepfakeGame({ ctx }: { ctx: GameCtx }) {
                 </span>
               ) : null}
             </div>
-            <div className="px-9 py-7">
+            <div className="px-5 py-6 sm:px-9 sm:py-7">
               <h3 className="text-[28px] font-black leading-tight">{pick(lang, c.titleEn, c.titleMy)}</h3>
               <p data-testid="df-desc" className="mt-3 text-[21px] font-semibold leading-[1.65] text-[#3c3a55]">
                 {pick(lang, c.descEn, c.descMy)}
               </p>
               {judged === null ? (
-                <div className="mt-6 grid grid-cols-2 gap-5">
+                <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                   <button data-testid="df-real" onClick={() => judge(false)}
-                    className="pv-btn min-h-[80px] text-[24px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>
+                    className="pv-btn min-h-[72px] text-[24px] sm:min-h-[80px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>
                     ✓ {pick(lang, "REAL", "အစစ်")}
                   </button>
                   <button data-testid="df-fake" onClick={() => judge(true)}
-                    className="pv-btn min-h-[80px] text-[24px]" style={{ background: "#ff4b4b", ["--pv-shade" as string]: "#d33131" }}>
+                    className="pv-btn min-h-[72px] text-[24px] sm:min-h-[80px]" style={{ background: "#ff4b4b", ["--pv-shade" as string]: "#d33131" }}>
                     🎭 {pick(lang, "AI FAKE", "AI အတု")}
                   </button>
                 </div>

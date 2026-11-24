@@ -42,8 +42,8 @@ export default function PrivacyGame({ ctx }: { ctx: GameCtx }) {
       {/* The fake phone */}
       <div className="mx-auto max-w-[760px]">
         <div className="pv-card overflow-hidden bg-white">
-          <div className="bg-[#2b2140] px-8 py-5 text-white">
-            <div className="flex items-center justify-between">
+          <div className="bg-[#2b2140] px-5 py-5 text-white sm:px-8">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-[21px] font-black">📱 {pick(lang, "Phone Settings", "ဖုန်း Settings")}</span>
               <span className="rounded-full bg-[#ff4b4b] px-4 py-1 text-[15px] font-black">
                 {RISKY_COUNT - fixed.size} {pick(lang, "risks left", "ခု အန္တရာယ် ကျန်")}
@@ -54,12 +54,12 @@ export default function PrivacyGame({ ctx }: { ctx: GameCtx }) {
                 "အနီရောင် switch တွေက အန္တရာယ်ရှိပြီး ပွင့်နေတယ်။ တစ်ခုကို နှိပ်ပြီး လော့ခ်ချပါ။")}
             </p>
           </div>
-          <div className="flex flex-col divide-y-[3px] divide-[#f1eef9] px-8">
+          <div className="flex flex-col divide-y-[3px] divide-[#f1eef9] px-5 sm:px-8">
             {PRIVACY_SETTINGS.map((s, i) => {
               const isFixed = fixed.has(i);
               const on = s.risky && !isFixed;
               return (
-                <div key={i} className="flex items-center gap-5 py-5">
+                <div key={i} className="flex items-center gap-3 py-5 sm:gap-5">
                   <div className="min-w-0 flex-1">
                     <div className="text-[22px] font-black leading-tight">{pick(lang, s.nameEn, s.nameMy)}</div>
                     <div className={`text-[17px] font-bold ${on ? "text-[#d33131]" : "text-[#46a302]"}`}>

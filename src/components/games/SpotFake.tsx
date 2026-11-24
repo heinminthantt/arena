@@ -130,7 +130,7 @@ export default function SpotFakeGame({ ctx }: { ctx: GameCtx }) {
             <StatChip label={t("scoreWord")} value={score} bg="#00b8a9" />
             <span className="text-[19px] font-bold text-white/85">{pick(lang, pair.kindEn, pair.kindMy)}</span>
           </div>
-          <div key={pairIdx} className="pv-card pv-rise bg-white px-8 py-7">
+          <div key={pairIdx} className="pv-card pv-rise bg-white px-5 py-6 sm:px-8 sm:py-7">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {renderPanel("left")}
               {renderPanel("right")}

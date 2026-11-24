@@ -63,7 +63,7 @@ export default function LinkDetectiveGame({ ctx }: { ctx: GameCtx }) {
             <StatChip label="✓" value={correct} bg="#58cc02" />
             <StatChip label={t("scoreWord")} value={score} bg="#00b8a9" />
           </div>
-          <div className="pv-card pv-rise bg-white px-9 py-8" key={idx}>
+          <div className="pv-card pv-rise bg-white px-5 py-6 sm:px-9 sm:py-8" key={idx}>
             <div className="text-[19px] font-black tracking-widest text-[#8a87a0]">
               {pick(lang, "WHICH LINK IS REAL?", "ဘယ် လင့်ခ်က အစစ်လဲ?")}
             </div>

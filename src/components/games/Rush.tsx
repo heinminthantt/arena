@@ -113,7 +113,7 @@ export default function RushGame({ ctx }: { ctx: GameCtx }) {
             <span className="text-[18px] font-bold text-white/85">{idx + 1} / {deck.length}</span>
           </div>
           <div className="pv-timer mb-5"><div className="pv-timer-fill" style={{ width: (timeLeft / ROUND_SECONDS) * 100 + "%" }} /></div>
-          <div key={idx} className={`pv-card pv-rise bg-white px-9 py-8 ${flash === "bad" ? "pv-shake" : ""}`}
+          <div key={idx} className={`pv-card pv-rise bg-white px-5 py-6 sm:px-9 sm:py-8 ${flash === "bad" ? "pv-shake" : ""}`}
             style={flash ? { boxShadow: flash === "good" ? "0 10px 0 #46a302" : "0 10px 0 #d33131" } : undefined}>
             <div className="flex items-center gap-3">
               <span className="flex h-[54px] w-[54px] items-center justify-center rounded-2xl bg-[#e3f4fe] text-[26px]">✉️</span>
@@ -131,13 +131,13 @@ export default function RushGame({ ctx }: { ctx: GameCtx }) {
               {pick(lang, msg.en, msg.my)}
             </p>
           </div>
-          <div className="mt-6 grid grid-cols-2 gap-5">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
             <button data-testid="rush-scam" onClick={() => answer(true)}
-              className="pv-btn min-h-[84px] text-[26px]" style={{ background: "#ff4b4b", ["--pv-shade" as string]: "#d33131" }}>
+              className="pv-btn min-h-[72px] text-[24px] sm:min-h-[84px] sm:text-[26px]" style={{ background: "#ff4b4b", ["--pv-shade" as string]: "#d33131" }}>
               ⚠ {t("scamBtn")}
             </button>
             <button data-testid="rush-safe" onClick={() => answer(false)}
-              className="pv-btn min-h-[84px] text-[26px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>
+              className="pv-btn min-h-[72px] text-[24px] sm:min-h-[84px] sm:text-[26px]" style={{ background: "#58cc02", ["--pv-shade" as string]: "#46a302" }}>
               ✓ {t("safeBtn")}
             </button>
           </div>

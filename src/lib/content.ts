@@ -9,12 +9,12 @@ export type Lang = "en" | "my";
 export const T: Record<Lang, Record<string, string>> = {
   en: { students:"Students", usage:"Demo calls", tokens:"Est. tokens",
     home:"Home", scam:"Scam or Safe", vault:"Hack the Bot", roast:"Password Roast",
-    ask:"Ask the Hacker", quiz:"Finale Quiz", records:"Records",
+    ask:"Q&A Chat", quiz:"Finale Quiz", records:"Records",
     homeSub:"Tap any section to jump straight to it. Nothing is locked in order. Every score, answer and record is saved on this device, even after a reload.",
     scamSub:"Students vote first with red and green cards. Then ask the AI. The AI only scores when its verdict matches the truth.",
     vaultSub:"A guard bot holds a fake secret word. Volunteers try to trick it into saying the word. 5 attempts per level.",
-    roastSub:"Use fake passwords only. Strength is checked on this device. The password itself is never sent anywhere.",
-    askSub:"The presenter types a student question. In the demo, answers come from saved answers. The live API will replace them later.",
+    roastSub:"Strength is checked on this device. The password itself is never sent anywhere.",
+    askSub:"Ask any cybersecurity or online-safety question and get a clear, plain-language answer.",
     quizSub:"8 questions. No API needed. This round always works, even with no internet.",
     recordsSub:"Every record from every page, saved automatically. Reload the page and they are still here.",
     askAi:"Ask the AI", next:"Next", prev:"Back", scamBtn:"SCAM", safeBtn:"SAFE",
@@ -55,12 +55,12 @@ export const T: Record<Lang, Record<string, string>> = {
     trickPick:"Pick your trick" },
   my: { students:"ကျောင်းသားများ", usage:"Demo ခေါ်ဆိုမှု", tokens:"ခန့်မှန်း တိုကင်",
     home:"ပင်မ", scam:"လိမ်လည်မှုလား၊ လုံခြုံလား?", vault:"ဘော့ကို လှည့်စားကြည့်ပါ", roast:"စကားဝှက် စစ်ဆေးခန်း",
-    ask:"ဟက်ကာကို မေးကြည့်ပါ", quiz:"နောက်ဆုံး ပဟေဠိ", records:"မှတ်တမ်းများ",
+    ask:"မေးဖြေ စကားပြော", quiz:"နောက်ဆုံး ပဟေဠိ", records:"မှတ်တမ်းများ",
     homeSub:"ဘယ်အပိုင်းကိုမဆို တိုက်ရိုက် သွားနိုင်ပါတယ်။ အစဉ်လိုက် လုပ်စရာ မလိုပါ။ ရမှတ်၊ အဖြေနဲ့ မှတ်တမ်း အားလုံးကို ဒီစက်ထဲမှာ သိမ်းထားပါတယ်။",
     scamSub:"ကျောင်းသားတွေက အနီနဲ့ အစိမ်း ကတ်နဲ့ အရင် မဲပေးပါ။ ပြီးမှ AI ကို မေးပါ။ AI ရဲ့ အဖြေ အမှန်နဲ့ ကိုက်မှ AI မှတ် ရပါမယ်။",
     vaultSub:"အုပ်ထိန်းဘော့က စကားဝှက်အတု တစ်လုံး ကိုင်ထားပါတယ်။ လှည့်စားပြီး ပြောခိုင်းကြည့်ပါ။ အဆင့်တစ်ခုကို ၅ ကြိမ် ကြိုးစားနိုင်ပါတယ်။",
-    roastSub:"စကားဝှက် အတု သာ သုံးပါ။ စကားဝှက်၏ခိုင်မာမှုကို ဒီစက်ပေါ်မှာပဲ စစ်ပါတယ်။ စကားဝှက်ကို ဘယ်ကိုမှ မပို့ပါ။",
-    askSub:"တင်ဆက်သူက ကျောင်းသားရဲ့ မေးခွန်းကို ရိုက်ထည့်ပါ။ Demo မှာ သိမ်းထားတဲ့ အဖြေတွေ ပြန်ပေးပါတယ်။ နောက်မှ Live API နဲ့ အစားထိုးပါမယ်။",
+    roastSub:"စကားဝှက်၏ခိုင်မာမှုကို ဒီစက်ပေါ်မှာပဲ စစ်ပါတယ်။ စကားဝှက်ကို ဘယ်ကိုမှ မပို့ပါ။",
+    askSub:"ဆိုက်ဘာ လုံခြုံရေး သို့မဟုတ် အွန်လိုင်း ဘေးကင်းရေး မေးခွန်း မှန်သမျှ မေးပြီး ရိုးရှင်းတဲ့ အဖြေ ရယူပါ။",
     quizSub:"မေးခွန်း ၈ ခု။ API မလိုပါ။ အင်တာနက် မရှိလည်း ဒီအပိုင်း အမြဲ အလုပ်လုပ်ပါတယ်။",
     recordsSub:"စာမျက်နှာတိုင်းက မှတ်တမ်း အားလုံး အလိုအလျောက် သိမ်းထားပါတယ်။",
     askAi:"AI ကို မေးမယ်", next:"ရှေ့သို့", prev:"နောက်သို့", scamBtn:"လိမ်လည်မှု", safeBtn:"လုံခြုံ",
@@ -235,7 +235,7 @@ export const ROASTS: Record<number, { en: string; my: string }> = {
   4:{ en:"Fortress level. Long, random, and memorable. This is the pattern to copy.", my:"ခံတပ် အဆင့်။ ရှည်တယ်၊ ကျပန်း ဖြစ်တယ်၊ မှတ်မိလွယ်တယ်။ ဒီပုံစံကို အတုယူပါ။" }
 };
 
-/* ---------- Ask the Hacker: saved answers (demo) ---------- */
+/* ---------- Q&A chat: saved answers (demo/offline) ---------- */
 export function askAnswer(q: string, lang: Lang): string {
   const s = q.toLowerCase();
   const bad = ["hack into", "steal password", "break into", "malware", "phishing kit", "ခိုးဝင်", "စကားဝှက် ခိုး"];
@@ -261,8 +261,8 @@ export function askAnswer(q: string, lang: Lang): string {
     ? "အလုပ်ရဖို့ အရင် ငွေ သွင်းခိုင်းရင် အဲ့ဒါ လိမ်တာပါ။ အလုပ်အစစ်က သင့်ကို ပေးတာ၊ သင်က ပေးရတာ မဟုတ်ပါ။"
     : "If a job asks you to pay first, it is a scam. A real job pays you, you never pay it.";
   return lang === "my"
-    ? "ကောင်းတဲ့ မေးခွန်းပါ။ အခြေခံ စည်းကမ်းကတော့: ရပ်ပါ၊ စစ်ပါ၊ မမျှဝေပါနဲ့၊ Report လုပ်ပါ။ Live API ချိတ်ပြီးရင် ဒီထက် အသေးစိတ် ဖြေပေးပါမယ်။"
-    : "Good question. The core rule is: stop, check, do not share, and report. Once the live API is connected, I can answer this in more detail.";
+    ? "ကောင်းတဲ့ မေးခွန်းပါ။ အခြေခံ စည်းကမ်းက: ရပ်ပါ၊ source ကို စစ်ပါ၊ ကုဒ် ဒါမှမဟုတ် စကားဝှက် ဘယ်တော့မှ မမျှဝေပါနဲ့၊ သံသယဖြစ်တာ တွေ့ရင် report လုပ်ပါ။"
+    : "Good question. The core rule is: stop, check the source, never share codes or passwords, and report anything suspicious.";
 }
 
 /* ---------- Mock brain: stands in for the Claude API in this demo ---------- */
@@ -506,7 +506,7 @@ export const XP = {
   vaultWin: 30,              // per Hack the Bot level, first win only
   quizCorrect: 15,           // per correct Finale Quiz answer
   roastByScore: [0, 0, 5, 15, 25], // Password Roast, indexed by pwScore 0..4
-  askQuestion: 5,            // per Ask the Hacker question answered
+  askQuestion: 5,            // per Q&A chat question answered
   streakBonusEvery: 3,       // every 3rd consecutive correct answer...
   streakBonus: 10,           // ...pays this bonus on top
   rushClear: 30,             // Inbox Rush: finish the round with 10+ correct

@@ -82,22 +82,22 @@ export default function BossFightGame({ ctx }: { ctx: GameCtx }) {
         <>
           {/* Boss status */}
           <div className="pv-card mb-6 overflow-hidden bg-white">
-            <div className="flex flex-wrap items-center gap-6 bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] px-8 py-6 text-white">
-              <span className={`flex h-[96px] w-[96px] shrink-0 items-center justify-center rounded-full border-4 border-white/40 bg-[#2b2140] ${phase === "feedback" && lastRight ? "pv-shake" : ""}`}>
+            <div className="flex flex-col items-start gap-3 bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] px-4 py-4 text-white sm:flex-row sm:items-center sm:gap-6 sm:px-8 sm:py-6">
+              <span className={`flex h-[64px] w-[64px] shrink-0 items-center justify-center rounded-full border-4 border-white/40 bg-[#2b2140] sm:h-[96px] sm:w-[96px] ${phase === "feedback" && lastRight ? "pv-shake" : ""}`}>
                 <SkullIcon size={54} />
               </span>
-              <div className="min-w-[300px] flex-1">
-                <div className="flex flex-wrap items-baseline justify-between gap-3">
-                  <span className="text-[28px] font-black">SCAM SYNDICATE BOSS</span>
-                  <span className="text-[19px] font-black">{t("bossHpWord")}: {hp} / {BOSS_MAX_HP}</span>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-baseline justify-between gap-2 sm:gap-3">
+                  <span className="break-words text-[18px] font-black leading-tight sm:text-[28px]">SCAM SYNDICATE BOSS</span>
+                  <span className="text-[16px] font-black sm:text-[19px]">{t("bossHpWord")}: {hp} / {BOSS_MAX_HP}</span>
                 </div>
                 <div className="pv-timer mt-3" style={{ height: 26 }}>
                   <div style={{ width: (hp / BOSS_MAX_HP) * 100 + "%", height: "100%", background: "linear-gradient(180deg,#ff7a59,#ff4b4b)", transition: "width .4s ease" }} />
                 </div>
-                <div className="mt-3 flex items-center gap-2 text-[21px]">
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-[17px] sm:text-[21px]">
                   <span className="font-black">{t("heartsWord")}:</span>
                   <span data-testid="boss-hearts">{Array.from({ length: BOSS_PLAYER_HEARTS }, (_, i) => (i < hearts ? "❤️" : "🖤")).join(" ")}</span>
-                  <span className="ml-3 font-bold text-white/80">{pick(lang, "Wave", "လှိုင်း")} {Math.min(wave + 1, BOSS_WAVES.length)} / {BOSS_WAVES.length}</span>
+                  <span className="font-bold text-white/80 sm:ml-3">{pick(lang, "Wave", "လှိုင်း")} {Math.min(wave + 1, BOSS_WAVES.length)} / {BOSS_WAVES.length}</span>
                 </div>
               </div>
             </div>
@@ -107,7 +107,7 @@ export default function BossFightGame({ ctx }: { ctx: GameCtx }) {
             <StatChip label={pick(lang, "Attack", "တိုက်ခိုက်မှု")} value={pick(lang, w.kindEn, w.kindMy)} bg="#7c3aed" />
           </div>
 
-          <div key={wave} className="pv-card pv-rise bg-white px-9 py-8">
+          <div key={wave} className="pv-card pv-rise bg-white px-5 py-6 sm:px-9 sm:py-8">
             <p data-testid="boss-attack" className="text-[26px] font-bold leading-[1.6] text-[#2b2140]">
               {pick(lang, w.attackEn, w.attackMy)}
             </p>
