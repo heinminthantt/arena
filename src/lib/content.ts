@@ -235,6 +235,32 @@ export const ROASTS: Record<number, { en: string; my: string }> = {
   4:{ en:"Fortress level. Long, random, and memorable. This is the pattern to copy.", my:"ခံတပ် အဆင့်။ ရှည်တယ်၊ ကျပန်း ဖြစ်တယ်၊ မှတ်မိလွယ်တယ်။ ဒီပုံစံကို အတုယူပါ။" }
 };
 
+/* Extra local roast lines per score, so even the offline backup brain
+   does not read identically every time. The live AI roast replaces all
+   of these when the API answers. */
+export const ROAST_EXTRAS: Record<number, { en: string; my: string }[]> = {
+  0: [
+    { en: "A gentle breeze of guessing and this one is gone. Attackers keep lists of passwords exactly like this.", my: "ခန့်မှန်းလိုက်တာနဲ့ ပြုတ်ကျမယ့် စကားဝှက်ပဲ။ တိုက်ခိုက်သူတွေဆီမှာ ဒီလို စကားဝှက် စာရင်း အဆင်သင့် ရှိတယ်။" },
+    { en: "This is not a password, it is a welcome mat. It would be cracked before your tea cools.", my: "ဒါ စကားဝှက် မဟုတ်ဘူး၊ ကြိုဆိုတဲ့ ဖျာပဲ။ လက်ဖက်ရည် မအေးခင် ဖောက်ခံရမယ်။" },
+  ],
+  1: [
+    { en: "One step above using 'password'. A birthday or a pet name is a gift to anyone who knows you.", my: "'password' သုံးတာထက် တစ်ဆင့်ပဲ သာတယ်။ မွေးနေ့ ဒါမှမဟုတ် အိမ်မွေးတိရစ္ဆာန် နာမည်က သင့်ကို သိတဲ့သူအတွက် လက်ဆောင်ပဲ။" },
+    { en: "Short and predictable. Attackers try names, years and keyboard walks first, and this has them all.", my: "တိုပြီး ခန့်မှန်းလွယ်တယ်။ တိုက်ခိုက်သူတွေက နာမည်၊ ခုနှစ်နဲ့ ကီးဘုတ် လမ်းကြောင်းတွေကို အရင် စမ်းတာပဲ၊ ဒီမှာ အကုန် ပါတယ်။" },
+  ],
+  2: [
+    { en: "Halfway there. It has some ingredients, but the recipe is a famous one.", my: "တစ်ဝက်တော့ ရောက်ပြီ။ ပါဝင်ပစ္စည်း နည်းနည်း ရှိပေမယ့် ချက်နည်းက နာမည်ကြီး နည်းပဲ။" },
+    { en: "Not terrible, not safe. A few more unrelated words would change its life.", my: "အရမ်း မဆိုး၊ ဒါပေမယ့် မလုံခြုံသေး။ မဆိုင်တဲ့ စကားလုံး နည်းနည်း ထပ်ထည့်ရင် သူ့ ဘဝ ပြောင်းသွားမယ်။" },
+  ],
+  3: [
+    { en: "Strong bones. One more random word and even patient attackers give up.", my: "အရိုး ခိုင်တယ်။ ကျပန်း စကားလုံး တစ်လုံး ထပ်ထည့်ရင် စိတ်ရှည်တဲ့ တိုက်ခိုက်သူတောင် လက်လျှော့မယ်။" },
+    { en: "This one makes attackers work for a living. Keep this pattern, never reuse it elsewhere.", my: "ဒီတစ်ခုက တိုက်ခိုက်သူတွေကို အလုပ် လုပ်ခိုင်းတယ်။ ဒီပုံစံကို ထိန်းထားပါ၊ တခြားနေရာမှာ ပြန်မသုံးပါနဲ့။" },
+  ],
+  4: [
+    { en: "A passphrase with a plot twist. Long, odd, easy for you, miserable for a machine.", my: "ဇာတ်လမ်း အလှည့်အပြောင်း ပါတဲ့ စကားစု။ ရှည်တယ်၊ ထူးဆန်းတယ်၊ သင့်အတွက် လွယ်တယ်၊ စက်အတွက် ငရဲပဲ။" },
+    { en: "Textbook fortress. If every account had one of these, password attacks would be a history lesson.", my: "စာအုပ်ထဲက ခံတပ် အတိုင်းပဲ။ အကောင့်တိုင်းမှာ ဒီလို တစ်ခုစီ ရှိရင် စကားဝှက် တိုက်ခိုက်မှုက သမိုင်း သင်ခန်းစာ ဖြစ်သွားမယ်။" },
+  ],
+};
+
 /* ---------- Q&A chat: saved answers (demo/offline) ---------- */
 export function askAnswer(q: string, lang: Lang): string {
   const s = q.toLowerCase();
@@ -278,7 +304,7 @@ export interface ApiResult {
 
 interface MockPayload {
   cardId?: number; level?: number; attempt?: string; trick?: string;
-  score?: number; length?: number; question?: string; lang: Lang;
+  score?: number; length?: number; patternFlags?: string[]; question?: string; lang: Lang;
   game?: string; cleared?: boolean; summary?: string;
 }
 
@@ -359,7 +385,9 @@ const MockBrain = {
       return { reply, won };
     }
     if (route === "roast") {
-      const r = ROASTS[p.score ?? 0];
+      const band = ROASTS[p.score ?? 0];
+      const pool = [band, ...(ROAST_EXTRAS[p.score ?? 0] ?? [])];
+      const r = pool[Math.floor(Math.random() * pool.length)];
       return { roast: p.lang === "my" ? r.my : r.en,
         tip: p.lang === "my" ? "အကြံပြုချက်: မဆိုင်တဲ့ စကားလုံး ၄ လုံးနဲ့ နံပါတ် တစ်ခု သုံးပါ။ ရှည်တာက ရှုပ်တာထက် ပိုကောင်းတယ်။"
                              : "Tip: use 4 unrelated words plus a number. Length beats clever symbols." };
@@ -408,12 +436,13 @@ export const Api = {
       if (!response.ok) return fallback;
       const data = await response.json() as {
         mode?: string;
-        result?: { text?: string; explanation?: string; answer?: string; debrief?: string; usage?: { input?: number; output?: number } };
+        result?: { text?: string; explanation?: string; answer?: string; debrief?: string; roast?: string; usage?: { input?: number; output?: number } };
       };
       if (data.mode !== "live" || !data.result) return fallback;
       const explanation = data.result.explanation || data.result.text;
       return {
         ...out,
+        ...(route === "roast" && data.result.roast ? { roast: data.result.roast } : {}),
         ...(route === "ask" && data.result.answer ? { answer: data.result.answer } : {}),
         ...(route === "debrief" && data.result.debrief ? { debrief: data.result.debrief } : {}),
         ...(explanation ? { explanation } : {}),
@@ -438,6 +467,28 @@ export function pwScore(pw: string): number {
   if (/(123|abc|qwerty|password|1234)/i.test(pw)) s -= 2;
   if (/^[a-z]+\d{2,4}!?$/i.test(pw)) s -= 1;
   return Math.max(0, Math.min(4, s));
+}
+
+/* Derived signals about a password's shape, computed on this device.
+   These describe patterns only; the password itself is never sent. */
+export function pwFlags(pw: string): string[] {
+  const f: string[] = [];
+  if (pw.length < 6) f.push("very short (under 6 characters)");
+  else if (pw.length < 8) f.push("short (under 8 characters)");
+  if (pw.length >= 16) f.push("long (16+ characters)");
+  if (!/[A-Z]/.test(pw)) f.push("no uppercase letters");
+  if (!/[a-z]/.test(pw)) f.push("no lowercase letters");
+  if (!/\d/.test(pw)) f.push("no digits");
+  if (!/[^A-Za-z0-9]/.test(pw)) f.push("no symbols");
+  if (/(123|234|345|456|567|678|789|abc|qwerty|asdf|zxcv)/i.test(pw)) f.push("contains a keyboard sequence");
+  if (/(password|letmein|admin|welcome|iloveyou|football|dragon)/i.test(pw)) f.push("contains a very common password word");
+  if (/(19|20)\d{2}/.test(pw)) f.push("contains a year-like number");
+  if (/(.)\1\1/.test(pw)) f.push("has repeated characters");
+  if (/^[a-z]+\d{2,4}!?$/i.test(pw)) f.push("looks like a word followed by a short number");
+  if (/^\d+$/.test(pw)) f.push("digits only");
+  else if (/^[a-z]+$/i.test(pw)) f.push("letters only");
+  if (pw.trim().split(/\s+/).filter(Boolean).length >= 3) f.push("passphrase style (several words)");
+  return f.slice(0, 6);
 }
 
 /* ---------- State: same shape and same storage key as the demo ---------- */
