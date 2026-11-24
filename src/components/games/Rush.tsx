@@ -29,6 +29,7 @@ export default function RushGame({ ctx }: { ctx: GameCtx }) {
   const [score, setScore] = useState(0);
   const [flash, setFlash] = useState<"good" | "bad" | null>(null);
   const finished = useRef(false);
+  const [missed, setMissed] = useState<string[]>([]);
 
   const finish = (finalScore: number, finalCorrect: number) => {
     if (finished.current) return;
@@ -58,6 +59,7 @@ export default function RushGame({ ctx }: { ctx: GameCtx }) {
     setDeck(shuffled(RUSH_MESSAGES));
     setIdx(0); setCorrect(0); setStreak(0); setScore(0);
     setTimeLeft(ROUND_SECONDS); setFlash(null);
+    setMissed([]);
     setPhase("playing");
   };
 
@@ -65,6 +67,7 @@ export default function RushGame({ ctx }: { ctx: GameCtx }) {
     if (phase !== "playing" || flash) return;
     const msg = deck[idx];
     const right = guessScam === msg.isScam;
+    if (!right) setMissed(m => [...m, `${msg.en} (${msg.isScam ? "scam" : "safe"})`]);
     const newStreak = right ? streak + 1 : 0;
     const gained = right ? 10 + (newStreak % 3 === 0 ? 10 : 0) : 0;
     const newScore = score + gained;
@@ -92,7 +95,8 @@ export default function RushGame({ ctx }: { ctx: GameCtx }) {
           </p>
         </StartPanel>
       ) : phase === "done" ? (
-        <EndPanel ctx={ctx} game="rush" cleared={correct >= CLEAR_CORRECT} score={score} onAgain={start}>
+        <EndPanel ctx={ctx} game="rush" cleared={correct >= CLEAR_CORRECT} score={score} onAgain={start}
+          summary={`Correct ${correct} of ${correct + missed.length} answered. Missed: ${missed.join("; ") || "none"}.`}>
           <p className="mt-3 text-[20px] font-semibold text-[#5b5872]">
             {pick(lang,
               `You judged ${correct} of ${deck.length} messages correctly. ${CLEAR_CORRECT}+ correct clears the round.`,

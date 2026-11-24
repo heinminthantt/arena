@@ -112,7 +112,8 @@ export default function StoryGame({ ctx, game, nodes, start, themLabel, accent, 
 
       {isEnd && node ? (
         <div className="mt-6">
-          <EndPanel ctx={ctx} game={game} cleared={node.endKind === "win" || node.endKind === "safe"} score={money} onAgain={restart}>
+          <EndPanel ctx={ctx} game={game} cleared={node.endKind === "win" || node.endKind === "safe"} score={money} onAgain={restart}
+            summary={`Ending: ${pick(lang, node.endEn ?? "", node.endMy ?? "")}. Money left: ${money}%. Choices: ${history.filter(e => e.who === "me").map(e => e.text).join(" → ") || "none"}.`}>
             <p className="mx-auto mt-3 max-w-3xl text-[20px] font-semibold leading-relaxed text-[#5b5872]">
               {icon} {pick(lang, node.endEn ?? "", node.endMy ?? "")}
             </p>

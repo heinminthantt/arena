@@ -91,7 +91,8 @@ export default function PrivacyGame({ ctx }: { ctx: GameCtx }) {
 
         {done ? (
           <div className="mt-6">
-            <EndPanel ctx={ctx} game="privacy" cleared score={RISKY_COUNT * 20} onAgain={reset}>
+            <EndPanel ctx={ctx} game="privacy" cleared score={RISKY_COUNT * 20} onAgain={reset}
+              summary={`Locked ${fixed.size} of ${RISKY_COUNT} risky settings: ${[...fixed].map(i => PRIVACY_SETTINGS[i].nameEn).join(", ")}.`}>
               <p className="mt-3 text-[20px] font-semibold text-[#5b5872]">
                 {pick(lang, "Every risky setting is locked down. This phone is a much harder target now.",
                   "အန္တရာယ် setting အကုန် လော့ခ် ချပြီးပြီ။ ဒီဖုန်းက အခု တိုက်ခိုက်ရ အများကြီး ပိုခက်သွားပြီ။")}

@@ -14,16 +14,18 @@ export default function DeepfakeGame({ ctx }: { ctx: GameCtx }) {
   const [idx, setIdx] = useState(0);
   const [judged, setJudged] = useState<boolean | null>(null); // player's call: true = said fake
   const [correct, setCorrect] = useState(0);
+  const [missed, setMissed] = useState<string[]>([]);
 
   const c = DEEPFAKE_CASES[idx];
   const score = correct * 20;
 
-  const start = () => { setIdx(0); setJudged(null); setCorrect(0); setPhase("playing"); };
+  const start = () => { setIdx(0); setJudged(null); setCorrect(0); setMissed([]); setPhase("playing"); };
 
   const judge = (saidFake: boolean) => {
     if (judged !== null) return;
     setJudged(saidFake);
     if (saidFake === c.isFake) setCorrect(v => v + 1);
+    else setMissed(m => [...m, `${c.titleEn} (${c.isFake ? "fake" : "real"})`]);
   };
 
   const next = () => {
@@ -49,7 +51,8 @@ export default function DeepfakeGame({ ctx }: { ctx: GameCtx }) {
           </p>
         </StartPanel>
       ) : phase === "done" ? (
-        <EndPanel ctx={ctx} game="deepfake" cleared={correct >= CLEAR_CORRECT} score={score} onAgain={start}>
+        <EndPanel ctx={ctx} game="deepfake" cleared={correct >= CLEAR_CORRECT} score={score} onAgain={start}
+          summary={`Correct ${correct} of ${DEEPFAKE_CASES.length}. Missed: ${missed.join("; ") || "none"}.`}>
           <p className="mt-3 text-[20px] font-semibold text-[#5b5872]">
             {pick(lang, `You called ${correct} of ${DEEPFAKE_CASES.length} cases correctly.`,
               `အမှု ${DEEPFAKE_CASES.length} ခုထဲက ${correct} ခု မှန်အောင် ဆုံးဖြတ်နိုင်တယ်။`)}

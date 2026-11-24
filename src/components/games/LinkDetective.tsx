@@ -14,8 +14,9 @@ export default function LinkDetectiveGame({ ctx }: { ctx: GameCtx }) {
   const [idx, setIdx] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [correct, setCorrect] = useState(0);
+  const [missed, setMissed] = useState<string[]>([]);
 
-  const start = () => { setIdx(0); setPicked(null); setCorrect(0); setPhase("playing"); };
+  const start = () => { setIdx(0); setPicked(null); setCorrect(0); setMissed([]); setPhase("playing"); };
 
   const round = LINK_ROUNDS[idx];
   const score = correct * 15;
@@ -24,6 +25,7 @@ export default function LinkDetectiveGame({ ctx }: { ctx: GameCtx }) {
     if (picked !== null) return;
     setPicked(oi);
     if (oi === round.real) setCorrect(c => c + 1);
+    else setMissed(m => [...m, `${round.themeEn}: picked ${round.options[oi]}, real ${round.options[round.real]}`]);
   };
 
   const next = () => {
@@ -47,7 +49,8 @@ export default function LinkDetectiveGame({ ctx }: { ctx: GameCtx }) {
           </p>
         </StartPanel>
       ) : phase === "done" ? (
-        <EndPanel ctx={ctx} game="link" cleared={correct >= CLEAR_CORRECT} score={score} onAgain={start}>
+        <EndPanel ctx={ctx} game="link" cleared={correct >= CLEAR_CORRECT} score={score} onAgain={start}
+          summary={`Correct ${correct} of ${LINK_ROUNDS.length}. Missed: ${missed.join("; ") || "none"}.`}>
           <p className="mt-3 text-[20px] font-semibold text-[#5b5872]">
             {pick(lang, `You found the real link in ${correct} of ${LINK_ROUNDS.length} rounds.`,
               `အလှည့် ${LINK_ROUNDS.length} ခုထဲက ${correct} ခုမှာ လင့်ခ် အစစ်ကို ရှာနိုင်တယ်။`)}

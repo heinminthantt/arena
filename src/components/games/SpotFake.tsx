@@ -115,7 +115,8 @@ export default function SpotFakeGame({ ctx }: { ctx: GameCtx }) {
           </p>
         </StartPanel>
       ) : phase === "done" ? (
-        <EndPanel ctx={ctx} game="spot" cleared score={score} onAgain={start}>
+        <EndPanel ctx={ctx} game="spot" cleared score={score} onAgain={start}
+          summary={`Found ${totalFound} of ${SPOT_PAIRS.length * 3} tells across ${SPOT_PAIRS.length} pairs.`}>
           <p className="mt-3 text-[20px] font-semibold text-[#5b5872]">
             {pick(lang, "Every fake caught. Developer names, download counts, page age and payment style: those four checks expose most fakes.",
               "အတု အကုန် ဖမ်းမိပြီ။ Developer နာမည်၊ download အရေအတွက်၊ page သက်တမ်းနဲ့ ငွေပေးပုံစံ: ဒီ ၄ ချက် စစ်ရင် အတု တော်တော်များများ ပေါ်တယ်။")}

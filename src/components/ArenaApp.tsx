@@ -174,7 +174,7 @@ export default function ArenaApp() {
     });
   };
 
-  const ctx: GameCtx = { lang, t, S, mut, log, finishRun, go: (p: string) => go(p) };
+  const ctx: GameCtx = { lang, t, S, mut, log, finishRun, bumpUsage, go: (p: string) => go(p) };
 
   const go = (page: string) => {
     mut(d => { d.page = page; });

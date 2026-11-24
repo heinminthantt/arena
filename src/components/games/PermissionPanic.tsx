@@ -29,6 +29,7 @@ export default function PermissionPanicGame({ ctx }: { ctx: GameCtx }) {
   const [score, setScore] = useState(0);
   const [lastWhy, setLastWhy] = useState<{ ok: boolean; card: PermCard } | null>(null);
   const finished = useRef(false);
+  const [missed, setMissed] = useState<string[]>([]);
 
   const finish = (finalScore: number, finalCorrect: number) => {
     if (finished.current) return;
@@ -54,6 +55,7 @@ export default function PermissionPanicGame({ ctx }: { ctx: GameCtx }) {
     setDeck(shuffled(PERMISSION_CARDS));
     setIdx(0); setCorrect(0); setStreak(0); setScore(0);
     setTimeLeft(ROUND_SECONDS); setLastWhy(null);
+    setMissed([]);
     setPhase("playing");
   };
 
@@ -61,6 +63,7 @@ export default function PermissionPanicGame({ ctx }: { ctx: GameCtx }) {
     if (phase !== "playing") return;
     const card = deck[idx];
     const right = allow === card.allow;
+    if (!right) setMissed(m => [...m, `${card.appEn} asked for ${card.permEn}; correct ${card.allow ? "allow" : "deny"}`]);
     const newStreak = right ? streak + 1 : 0;
     const gained = right ? 10 + (newStreak % 3 === 0 ? 10 : 0) : 0;
     const newScore = score + gained;
@@ -85,7 +88,8 @@ export default function PermissionPanicGame({ ctx }: { ctx: GameCtx }) {
           </p>
         </StartPanel>
       ) : phase === "done" ? (
-        <EndPanel ctx={ctx} game="permission" cleared={correct >= CLEAR_CORRECT} score={score} onAgain={start}>
+        <EndPanel ctx={ctx} game="permission" cleared={correct >= CLEAR_CORRECT} score={score} onAgain={start}
+          summary={`Correct ${correct} of ${correct + missed.length} answered. Missed: ${missed.join("; ") || "none"}.`}>
           <p className="mt-3 text-[20px] font-semibold text-[#5b5872]">
             {pick(lang, `You judged ${correct} of ${deck.length} requests correctly. ${CLEAR_CORRECT}+ clears the round.`,
               `တောင်းဆိုမှု ${deck.length} ခုထဲက ${correct} ခု မှန်အောင် ဆုံးဖြတ်နိုင်တယ်။ ${CLEAR_CORRECT} ခု မှန်ရင် ပြီးတယ်။`)}

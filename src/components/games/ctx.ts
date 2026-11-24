@@ -12,5 +12,7 @@ export interface GameCtx {
   /* Record a finished run: plays +1, best score kept, and on a first
      clear the XP award, record line and badge sync all happen inside. */
   finishRun: (game: GameId, score: number, cleared: boolean) => void;
+  /* Add one API call's tokens to the header usage counter. */
+  bumpUsage: (u: { input: number; output: number }) => void;
   go: (page: string) => void;
 }

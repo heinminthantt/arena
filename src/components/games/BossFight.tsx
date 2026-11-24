@@ -13,6 +13,7 @@ export default function BossFightGame({ ctx }: { ctx: GameCtx }) {
   const [hp, setHp] = useState(BOSS_MAX_HP);
   const [hearts, setHearts] = useState(BOSS_PLAYER_HEARTS);
   const [lastRight, setLastRight] = useState<boolean | null>(null);
+  const [missed, setMissed] = useState<string[]>([]);
 
   const w = BOSS_WAVES[Math.min(wave, BOSS_WAVES.length - 1)];
   const damageDealt = BOSS_MAX_HP - hp;
@@ -20,11 +21,13 @@ export default function BossFightGame({ ctx }: { ctx: GameCtx }) {
   const start = () => {
     setWave(0); setHp(BOSS_MAX_HP); setHearts(BOSS_PLAYER_HEARTS);
     setLastRight(null); setPhase("fighting");
+    setMissed([]);
   };
 
   const pickShield = (si: number) => {
     if (phase !== "fighting") return;
     const right = si === w.correct;
+    if (!right) setMissed(m => [...m, `${w.kindEn}: chose "${w.shields[si]?.en}", correct "${w.shields[w.correct]?.en}"`]);
     setLastRight(right);
     if (right) setHp(v => Math.max(0, v - BOSS_HIT_DAMAGE));
     else setHearts(v => v - 1);
@@ -65,7 +68,8 @@ export default function BossFightGame({ ctx }: { ctx: GameCtx }) {
         </StartPanel>
       ) : phase === "won" || phase === "lost" ? (
         <EndPanel ctx={ctx} game="boss" cleared={phase === "won"}
-          score={phase === "won" ? 100 + hearts * 20 : damageDealt} onAgain={start}>
+          score={phase === "won" ? 100 + hearts * 20 : damageDealt} onAgain={start}
+          summary={`${phase === "won" ? "Won" : "Lost"} at wave ${wave + 1} with ${hearts} hearts left. Missed: ${missed.join("; ") || "none"}.`}>
           <p className="mx-auto mt-3 max-w-3xl text-[20px] font-semibold leading-relaxed text-[#5b5872]">
             {phase === "won"
               ? pick(lang, "The Syndicate boss is down. Every trick he threw was one you had already beaten in the Arena. That is why the journey matters.",

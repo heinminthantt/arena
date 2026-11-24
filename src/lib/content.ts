@@ -18,6 +18,7 @@ export const T: Record<Lang, Record<string, string>> = {
     quizSub:"8 questions. No API needed. This round always works, even with no internet.",
     recordsSub:"Every record from every page, saved automatically. Reload the page and they are still here.",
     askAi:"Ask the AI", next:"Next", prev:"Back", scamBtn:"SCAM", safeBtn:"SAFE",
+    aiDebriefBtn:"AI debrief", aiDebriefLive:"Live AI debrief", aiDebriefBackup:"Backup debrief",
     thinking:"Thinking...", yourVote:"Class vote", classSaid:"The class said",
     redFlags:"Red flags", whySafe:"Why it looks safe", tryIt:"Try an attempt", send:"Send",
     attemptsLeft:"attempts left", level:"Level", checkPw:"Check password", askQ:"Ask a question",
@@ -64,6 +65,7 @@ export const T: Record<Lang, Record<string, string>> = {
     quizSub:"မေးခွန်း ၈ ခု။ API မလိုပါ။ အင်တာနက် မရှိလည်း ဒီအပိုင်း အမြဲ အလုပ်လုပ်ပါတယ်။",
     recordsSub:"စာမျက်နှာတိုင်းက မှတ်တမ်း အားလုံး အလိုအလျောက် သိမ်းထားပါတယ်။",
     askAi:"AI ကို မေးမယ်", next:"ရှေ့သို့", prev:"နောက်သို့", scamBtn:"လိမ်လည်မှု", safeBtn:"လုံခြုံ",
+    aiDebriefBtn:"AI ရှင်းလင်းချက်", aiDebriefLive:"AI ရှင်းလင်းချက် (Live)", aiDebriefBackup:"အရန် ရှင်းလင်းချက်",
     thinking:"စဉ်းစားနေသည်...", yourVote:"အတန်းမဲ", classSaid:"အတန်းက ပြောတာက",
     redFlags:"သံသယဖြစ်ဖွယ် လက္ခဏာများ", whySafe:"ဘာကြောင့် လုံခြုံပုံ ရသလဲ", tryIt:"ကြိုးစားကြည့်ပါ", send:"ပို့မယ်",
     attemptsLeft:"ကြိမ်ကျန်", level:"အဆင့်", checkPw:"စကားဝှက် စစ်မယ်", askQ:"မေးခွန်း မေးမယ်",
@@ -273,15 +275,66 @@ export interface ApiResult {
   reply?: string; won?: boolean;
   roast?: string; tip?: string; explanation?: string;
   answer?: string;
+  debrief?: string;
 }
 
 interface MockPayload {
   cardId?: number; level?: number; attempt?: string; trick?: string;
   score?: number; length?: number; question?: string; lang: Lang;
+  game?: string; cleared?: boolean; summary?: string;
 }
+
+/* Offline debriefs: the core lesson for each game, used when the API is
+   down or the quota is out. The live answer replaces these when it works. */
+const DEBRIEF_FALLBACK: Record<string, { en: string; my: string }> = {
+  rush: {
+    en: "Speed hides the same three tells: prizes you never entered, codes or PINs, and pay-first jobs. Next run, scan for those before you tap.",
+    my: "အမြန်နှုန်းက လက္ခဏာ ၃ ခုကို ဖုံးထားတယ်: မဝင်ဖူးတဲ့ ဆု၊ ကုဒ် ဒါမှမဟုတ် PIN၊ အရင် ငွေသွင်းရတဲ့ အလုပ်။ နောက်တစ်ခါ မနှိပ်ခင် ဒီ ၃ ခုကို အရင် ရှာပါ။",
+  },
+  link: {
+    en: "Read the domain from the right: the last two labels are the real owner. Extra words before them, zeros for letters, or a familiar name inside another domain means fake.",
+    my: "Domain ကို ညာဘက်ကနေ ဖတ်ပါ: နောက်ဆုံး အပိုင်း ၂ ခုက ပိုင်ရှင် အစစ်ပဲ။ အရှေ့မှာ စကားလုံး ထပ်ထည့်တာ၊ စာလုံးအစား သုည ထည့်တာ၊ တခြား domain ထဲ နာမည်ကြီး တစ်ခု ထည့်ထားတာက အတုပဲ။",
+  },
+  privacy: {
+    en: "The risky settings were profile visibility, location, phone number, photo tags and unknown app installs. Check those five on a real phone tonight.",
+    my: "အန္တရာယ်ရှိတဲ့ setting တွေက profile မြင်နိုင်မှု၊ တည်နေရာ၊ ဖုန်းနံပါတ်၊ ဓာတ်ပုံ tag နဲ့ မသိတဲ့ နေရာက app သွင်းခွင့် ပဲ။ ဒီ ၅ ခုကို ဒီည ဖုန်းအစစ်မှာ စစ်ပါ။",
+  },
+  permission: {
+    en: "Ask one question: does this app need that permission to do its job? A flashlight needs light, not your contacts.",
+    my: "မေးခွန်း တစ်ခုပဲ မေးပါ: ဒီ app က သူ့ အလုပ်အတွက် ဒီ permission တကယ် လိုလား? flashlight က မီးပဲ လိုတယ်၊ သင့် contacts မလိုဘူး။",
+  },
+  spot: {
+    en: "Compare the same field on both sides: developer, age, payment, permissions. Fakes usually differ on history and payment.",
+    my: "နှစ်ဖက်လုံးမှာ တူတဲ့ field ကို ယှဉ်ပါ: developer၊ သက်တမ်း၊ ငွေပေးချေမှု၊ permission။ အတုတွေက သမိုင်းနဲ့ ငွေပေးချေမှုမှာ များသောအားဖြင့် ကွဲတယ်။",
+  },
+  deepfake: {
+    en: "Check the source first, then the details: hands, text, shadows, lip sync. A familiar face is not proof; call back on a number you know.",
+    my: "အရင် source ကို စစ်ပါ၊ ပြီးမှ detail တွေ: လက်ချောင်း၊ စာလုံး၊ အရိပ်၊ နှုတ်ခမ်းလှုပ်ရှားမှု။ မျက်နှာ ရင်းနှီးတာက သက်သေ မဟုတ်ဘူး၊ သိတဲ့ နံပါတ်ကို ပြန်ဆက်ပြီး စစ်ပါ။",
+  },
+  call: {
+    en: "Urgency is the scam. Hang up and call the official number yourself; no real bank asks for a code or PIN.",
+    my: "အရေးတကြီး ဖိအားပေးတာက လိမ်တဲ့ လက္ခဏာပဲ။ ဖုန်းချပြီး တရားဝင် နံပါတ်ကို ကိုယ်တိုင် ဆက်ပါ; ဘဏ် အစစ်က ကုဒ် ဒါမှမဟုတ် PIN မတောင်းဘူး။",
+  },
+  friend: {
+    en: "A friend asking for money from a new account is a stolen account until proven otherwise. Verify with a call on the number you already know.",
+    my: "အကောင့် အသစ်ကနေ ငွေ တောင်းတဲ့ သူငယ်ချင်းက အတည်မပြုမချင်း ခိုးခံထားတဲ့ အကောင့်ပဲ။ သိတဲ့ နံပါတ်ကို ဆက်ပြီး အတည်ပြုပါ။",
+  },
+  boss: {
+    en: "Every boss wave is a game you already played. Replay the one that cracked your shield, then come back.",
+    my: "Boss ရဲ့ လှိုင်းတိုင်းက သင် ကစားပြီးသား ဂိမ်းတွေပဲ။ ဒိုင်း အက်သွားတဲ့ ဂိမ်းကို ပြန် လေ့ကျင့်ပြီး ပြန်လာပါ။",
+  },
+  generic: {
+    en: "Review the tells you missed and replay the round. The habit matters more than the score.",
+    my: "လွတ်သွားတဲ့ လက္ခဏာတွေကို ပြန်ကြည့်ပြီး အလှည့်ကို ပြန်ကစားပါ။ အမှတ်ထက် အကျင့် ပိုအရေးကြီးတယ်။",
+  },
+};
 
 const MockBrain = {
   answer(route: string, p: MockPayload): Omit<ApiResult, "source" | "usage"> {
+    if (route === "debrief") {
+      const copy = DEBRIEF_FALLBACK[p.game ?? ""] ?? DEBRIEF_FALLBACK.generic;
+      return { debrief: p.lang === "my" ? copy.my : copy.en };
+    }
     if (route === "scam") {
       const c = CARDS[p.cardId ?? 0];
       return { verdict: c.isScam ? "scam" : "safe",
@@ -339,9 +392,10 @@ export const Api = {
 
     try {
       /* Client-side timeout: a slow or hung gateway must never stall the
-         show. After about 15s we abort and the backup answers take over. */
+         show. Keep this above the route's 20s abort so the server's own
+         answer (or backup) wins; after about 25s we abort. */
       const ctl = new AbortController();
-      const timer = setTimeout(() => ctl.abort(), 15000);
+      const timer = setTimeout(() => ctl.abort(), 25000);
       let response: Response;
       try {
         response = await fetch(this.endpoint, {
@@ -356,13 +410,14 @@ export const Api = {
       if (!response.ok) return fallback;
       const data = await response.json() as {
         mode?: string;
-        result?: { text?: string; explanation?: string; answer?: string; usage?: { input?: number; output?: number } };
+        result?: { text?: string; explanation?: string; answer?: string; debrief?: string; usage?: { input?: number; output?: number } };
       };
       if (data.mode !== "live" || !data.result) return fallback;
       const explanation = data.result.explanation || data.result.text;
       return {
         ...out,
         ...(route === "ask" && data.result.answer ? { answer: data.result.answer } : {}),
+        ...(route === "debrief" && data.result.debrief ? { debrief: data.result.debrief } : {}),
         ...(explanation ? { explanation } : {}),
         source: "live",
         usage: {
