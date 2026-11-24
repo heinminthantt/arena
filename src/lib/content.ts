@@ -52,8 +52,7 @@ export const T: Record<Lang, Record<string, string>> = {
     vaultHowBody:"A guard bot is protecting a secret word. Your job is to trick the bot into saying the word.",
     vaultStep1:"Pick a trick card below", vaultStep2:"Watch what the bot answers",
     vaultStep3:"If the word slips out, you win, +30 Shield Points",
-    trickPick:"Pick your trick", liveBadge:"LIVE API CONNECTED", demoBadge:"DEMO: API NOT CONNECTED",
-    livePill:"LIVE ANSWERS", backupPill:"BACKUP ANSWERS" },
+    trickPick:"Pick your trick" },
   my: { students:"ကျောင်းသားများ", usage:"Demo ခေါ်ဆိုမှု", tokens:"ခန့်မှန်း တိုကင်",
     home:"ပင်မ", scam:"လိမ်လည်မှုလား၊ လုံခြုံလား?", vault:"ဘော့ကို လှည့်စားကြည့်ပါ", roast:"စကားဝှက် စစ်ဆေးခန်း",
     ask:"ဟက်ကာကို မေးကြည့်ပါ", quiz:"နောက်ဆုံး ပဟေဠိ", records:"မှတ်တမ်းများ",
@@ -99,8 +98,7 @@ export const T: Record<Lang, Record<string, string>> = {
     vaultHowBody:"Bot က လျှို့ဝှက်စကားလုံးတစ်ခုကို စောင့်နေတယ်။ မင်း အလုပ်က Bot ကို လှည့်စားပြီး အဲ့စကားလုံးကို ပြောခိုင်းရမှာ။",
     vaultStep1:"အောက်က လှည့်ကွက် တစ်ခုကို ရွေးပါ", vaultStep2:"Bot ပြန်ပြောတာကို ကြည့်ပါ",
     vaultStep3:"စကားလုံး ပြောထွက်ရင် မင်းနိုင်ပြီ၊ +30 Shield Points ရမယ်",
-    trickPick:"လှည့်ကွက် ရွေးပါ", liveBadge:"LIVE API CONNECTED", demoBadge:"DEMO: API NOT CONNECTED",
-    livePill:"LIVE ANSWERS", backupPill:"BACKUP ANSWERS" }
+    trickPick:"လှည့်ကွက် ရွေးပါ" }
 };
 
 /* ---------- Content: Scam or Safe cards (from the demo kit) ---------- */
@@ -498,9 +496,6 @@ export interface ArenaState {
   quiz: { index: number; answers: Record<number, number> };
   records: RecordItem[];
   game: GameState;
-  /* true once any Api.call has been answered by the live API route.
-     Drives the LIVE badge/pill. Reset returns it to false. */
-  apiLive: boolean;
   games: GamesState;
 }
 
@@ -654,7 +649,6 @@ export const freshState = (): ArenaState => ({
     detail: "+" + XP.welcome + " Shield Points to start the journey",
   }],
   game: freshGame(),
-  apiLive: false,
   games: freshGames()
 });
 
@@ -669,7 +663,6 @@ export function migrateState(parsed: Partial<ArenaState> | null): ArenaState {
     ...base,
     ...parsed,
     game: { ...base.game, ...(parsed.game ?? {}) },
-    apiLive: parsed.apiLive ?? false,
     games: { ...base.games },
   };
   /* per-game merge so a save written by an older build (fewer games, or

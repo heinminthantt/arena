@@ -91,7 +91,7 @@ export default function ArenaApp() {
   const prevRank = useRef<number | null>(null);
 
   /* load once from localStorage, folded through migrateState so older
-     saves gain the new fields (XP, games, apiLive) without losing records */
+     saves gain the new fields (XP, games) without losing records */
   useEffect(() => {
     let initial = freshState();
     try {
@@ -159,7 +159,8 @@ export default function ArenaApp() {
   };
 
   /* New-game completion, called by every game component through ctx.
-     Plays and best score always update; XP lands only on the first clear. */
+     Plays and best score always update; XP lands only on the first clear.
+     Each finished run is one round: the winner takes a Students vs AI point. */
   const finishRun = (game: GameId, score: number, cleared: boolean) => {
     mut(d => {
       const g = d.games[game];
@@ -167,8 +168,11 @@ export default function ArenaApp() {
       if (score > g.best) g.best = score;
       const firstClear = cleared && !g.cleared;
       if (cleared) g.cleared = true;
+      if (cleared) d.scores.students += 1;
+      else d.scores.ai += 1;
       const name = (T.en as Record<string, string>)[game] || game;
-      log(d, game, cleared ? "cleared" : "played", name + " · score " + score);
+      log(d, game, cleared ? "cleared" : "played",
+        name + " · score " + score + (cleared ? " · Students +1" : " · AI +1"));
       if (firstClear) logXp(d, xpFlat(d, GAME_XP[game]), name + " cleared");
       logBadges(d);
     });
@@ -286,9 +290,6 @@ export default function ArenaApp() {
               </h2>
               <p className="mt-4 max-w-[640px] rounded-[22px] bg-white/90 p-5 text-[22px] font-semibold leading-relaxed text-[#2b2140] shadow-[0_6px_0_rgba(23,15,66,0.18)]">
                 {t("homeSub")}
-              </p>
-              <p className="mt-4 inline-block rounded-full bg-[#ffc800] px-5 py-2 text-lg font-black text-[#7a5200] shadow-[0_5px_0_#e0a800]">
-                {S.apiLive ? "● LIVE: real Claude answers are on" : "DEMO BUILD: every game works. Add the API key in env vars to go live."}
               </p>
             </div>
             <div className="relative h-[300px] w-[330px] shrink-0 max-[700px]:hidden">
@@ -456,7 +457,6 @@ export default function ArenaApp() {
       setLiveNote(r.source === "live" ? "Live mentor explanation" : "Demo backup explanation");
       bumpUsage(r.usage);
       mut(d => {
-        if (r.source === "live") d.apiLive = true;
         const aiRight = (r.verdict === "scam") === c.isScam;
         const classRight = d.scam.vote ? ((d.scam.vote === "scam") === c.isScam) : null;
         const firstReveal = !d.scam.revealed[i];
@@ -544,7 +544,6 @@ export default function ArenaApp() {
       bumpUsage(r.usage);
       setVaultLive(r.source === "live" && r.explanation ? r.explanation : null);
       mut(d => {
-        if (r.source === "live") d.apiLive = true;
         d.vault.attemptsLeft -= 1;
         d.vault.log.push({ level: v.level, attempt, reply: r.reply!, won: !!r.won });
         const firstWin = !!r.won && !d.vault.won[v.level];
@@ -669,7 +668,6 @@ export default function ArenaApp() {
       bumpUsage(r.usage);
       const masked = pw.slice(0, 2) + "•".repeat(Math.max(2, pw.length - 2));
       mut(d => {
-        if (r.source === "live") d.apiLive = true;
         d.roast.history.unshift({ masked, score, roast: r.roast!, time: now() });
         log(d, "roast", "password checked", masked + " score " + score + "/4");
         /* only the masked form and the score are stored, never the password */
@@ -747,7 +745,6 @@ export default function ArenaApp() {
       const r = await Api.call("ask", { question: q, lang });
       bumpUsage(r.usage);
       mut(d => {
-        if (r.source === "live") d.apiLive = true;
         d.ask.history.unshift({ q, a: r.answer!, source: r.source, time: now() });
         log(d, "ask", "question answered", q);
         logXp(d, xpFlat(d, XP.askQuestion), "Ask the Hacker question");
@@ -986,12 +983,6 @@ export default function ArenaApp() {
           <div>
             <h1 className="text-[25px] font-black leading-tight text-white" style={{ textShadow: "0 3px 0 rgba(23,15,66,0.3)" }}>CyberShield Arena</h1>
             <small className="text-[15px] font-bold text-white/80">Students vs AI</small>
-            <div>
-              <span data-testid="api-badge"
-                className={`mt-1.5 inline-block rounded-full px-3.5 py-1 text-[13px] font-black tracking-wide text-white ${S.apiLive ? "bg-[#58cc02] shadow-[0_3px_0_#46a302]" : "bg-[#2b2140]/70 shadow-[0_3px_0_rgba(23,15,66,0.4)]"}`}>
-                {S.apiLive ? t("liveBadge") : t("demoBadge")}
-              </span>
-            </div>
           </div>
         </div>
 
@@ -1064,10 +1055,6 @@ export default function ArenaApp() {
           <div className="pv-card flex items-center gap-3 bg-white px-6 py-4 text-[18px] font-semibold text-[#5b5872]">
             <span>{t("usage")}</span> <b className="text-[23px] text-[#2b2140]">{S.usage.calls}</b>
             <span>·</span> <span>{t("tokens")}</span> <b className="text-[23px] text-[#2b2140]">{S.usage.tokens.toLocaleString()}</b>
-            <span>·</span>
-            <span data-testid="api-pill" className={`rounded-full px-3.5 py-1 text-[14px] font-black tracking-wide text-white ${S.apiLive ? "bg-[#58cc02]" : "bg-[#a560e8]"}`}>
-              {S.apiLive ? t("livePill") : t("backupPill")}
-            </span>
           </div>
         </div>
 
