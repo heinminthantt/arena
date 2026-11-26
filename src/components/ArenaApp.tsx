@@ -457,13 +457,13 @@ export default function ArenaApp() {
                 })}
               </div>
               {/* Free tools sit directly under the Boss Fight stop, inside the journey card */}
-              <div className="flex gap-3 px-4 pb-6 pt-1 sm:px-8">
+              <div className="flex flex-col gap-3 px-4 pb-6 pt-1 min-[560px]:flex-row sm:px-8">
                 {(["ask", "roast"] as const).map(id => {
                   const c = SECTION_COLORS[id] ?? SECTION_COLORS.home;
                   const count = done(id);
                   return (
                     <button key={id} onClick={() => go(id)}
-                      className="pv-card flex flex-1 items-center gap-3 bg-[#f6f4fc] p-3.5 text-left active:scale-[.98] sm:p-4">
+                      className="pv-card flex min-w-0 flex-1 items-center gap-3 bg-[#f6f4fc] p-3.5 text-left active:scale-[.98] sm:p-4">
                       <span className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[16px] text-white"
                         style={{ background: `linear-gradient(180deg, ${c.color}, ${c.shade})`, boxShadow: `0 4px 0 ${c.shade}` }}>
                         {pageIcon(id, 26)}
