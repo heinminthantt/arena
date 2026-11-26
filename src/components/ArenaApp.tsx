@@ -552,7 +552,7 @@ export default function ArenaApp() {
         {dots(CARDS.length, i, d => !!S.scam.revealed[d],
           d => mut(dd => { dd.scam.index = d; dd.scam.vote = null; }), "Card", "#58cc02", "#46a302")}
         <div className="pv-card bg-white p-5 sm:p-8">
-          <div className="whitespace-pre-wrap rounded-[20px] border-[3px] border-dashed border-[#d9d4f5] bg-[#faf9ff] p-5 text-[23px] font-medium leading-[1.7] sm:p-7 sm:text-[31px]">
+          <div className="whitespace-pre-wrap [overflow-wrap:anywhere] rounded-[20px] border-[3px] border-dashed border-[#d9d4f5] bg-[#faf9ff] p-5 text-[23px] font-medium leading-[1.7] sm:p-7 sm:text-[31px]">
             {lang === "my" ? c.my : c.en}
           </div>
           <div className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
@@ -891,7 +891,7 @@ export default function ArenaApp() {
         {dots(total, i, d => S.quiz.answers[d] !== undefined,
           d => mut(dd => { dd.quiz.index = d; }), "Question", "#ff4b4b", "#d33131")}
         <div className="pv-card bg-white p-5 sm:p-8">
-          <div className="whitespace-pre-wrap rounded-[20px] border-[3px] border-dashed border-[#d9d4f5] bg-[#faf9ff] p-5 text-[23px] font-medium leading-[1.7] sm:p-7 sm:text-[31px]">
+          <div className="whitespace-pre-wrap [overflow-wrap:anywhere] rounded-[20px] border-[3px] border-dashed border-[#d9d4f5] bg-[#faf9ff] p-5 text-[23px] font-medium leading-[1.7] sm:p-7 sm:text-[31px]">
             {lang === "my" ? q.qMy : q.qEn}
           </div>
           <div className="mt-6 flex flex-wrap gap-4">
