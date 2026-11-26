@@ -127,7 +127,7 @@ export default function RushGame({ ctx }: { ctx: GameCtx }) {
                 </span>
               ) : null}
             </div>
-            <p data-testid="rush-msg" data-kind={msg.isScam ? "scam" : "safe"} className="mt-5 whitespace-pre-wrap text-[27px] font-semibold leading-[1.6]">
+            <p data-testid="rush-msg" data-kind={msg.isScam ? "scam" : "safe"} className="mt-5 whitespace-pre-wrap [overflow-wrap:anywhere] text-[27px] font-semibold leading-[1.6]">
               {pick(lang, msg.en, msg.my)}
             </p>
           </div>

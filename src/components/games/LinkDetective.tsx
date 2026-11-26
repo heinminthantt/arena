@@ -79,7 +79,7 @@ export default function LinkDetectiveGame({ ctx }: { ctx: GameCtx }) {
                 }
                 return (
                   <button key={oi} data-testid={`link-opt-${oi}`} data-real={oi === round.real ? "true" : "false"} onClick={() => choose(oi)} disabled={picked !== null}
-                    className={`rounded-[20px] border-[3px] px-6 py-5 text-left text-[23px] font-extrabold ${cls}`}
+                    className={`rounded-[20px] border-[3px] px-6 py-5 text-left text-[23px] font-extrabold [overflow-wrap:anywhere] ${cls}`}
                     style={{ boxShadow: `0 6px 0 ${shade}` }}>
                     🔗 {url}
                     {picked !== null && oi === round.real ? <span className="ml-2 text-[#46a302]">✓ {pick(lang, "REAL", "အစစ်")}</span> : null}

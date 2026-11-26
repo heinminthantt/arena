@@ -79,14 +79,14 @@ export default function SpotFakeGame({ ctx }: { ctx: GameCtx }) {
                 <button key={fi} data-testid={`spot-fake-${fi}`} onClick={() => tapFake(fi)}
                   className={`rounded-[16px] border-[3px] px-4 py-3 text-left transition-all ${isFound ? "border-[#ff4b4b] bg-[#ffecec]" : "border-[#e3def5] bg-white hover:border-[#a560e8]"}`}>
                   <span className="block text-[14px] font-black tracking-wide text-[#8a87a0]">{pick(lang, f.labelEn, f.labelMy)}</span>
-                  <span className="block text-[20px] font-extrabold leading-snug">{value} {isFound ? "🎯" : ""}</span>
+                  <span className="block text-[20px] font-extrabold leading-snug [overflow-wrap:anywhere]">{value} {isFound ? "🎯" : ""}</span>
                 </button>
               );
             }
             return (
               <div key={fi} className="rounded-[16px] border-[3px] border-[#e3def5] bg-white px-4 py-3">
                 <span className="block text-[14px] font-black tracking-wide text-[#8a87a0]">{pick(lang, f.labelEn, f.labelMy)}</span>
-                <span className="block text-[20px] font-extrabold leading-snug">{value}</span>
+                <span className="block text-[20px] font-extrabold leading-snug [overflow-wrap:anywhere]">{value}</span>
               </div>
             );
           })}
@@ -95,7 +95,7 @@ export default function SpotFakeGame({ ctx }: { ctx: GameCtx }) {
               onClick={() => setSameTap(true)}
               className={`rounded-[16px] border-[3px] border-[#e3def5] bg-white px-4 py-3 text-left ${sameTap ? "" : ""}`}>
               <span className="block text-[14px] font-black tracking-wide text-[#8a87a0]">{pick(lang, s.labelEn, s.labelMy)}</span>
-              <span className="block text-[20px] font-extrabold leading-snug">{pick(lang, s.valueEn, s.valueMy)}</span>
+              <span className="block text-[20px] font-extrabold leading-snug [overflow-wrap:anywhere]">{pick(lang, s.valueEn, s.valueMy)}</span>
             </button>
           ))}
         </div>
