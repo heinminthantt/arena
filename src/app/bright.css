@@ -275,9 +275,9 @@
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
   transition: left 0.18s ease;
 }
-.pv-switch-on { background: #ff4b4b; }
+.pv-switch-on { background: #58cc02; }
 .pv-switch-on::after { left: 38px; }
-.pv-switch-off { background: #58cc02; }
+.pv-switch-off { background: #ff4b4b; }
 
 /* Timer bar */
 .pv-timer {

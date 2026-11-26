@@ -11,16 +11,25 @@ const RISKY_COUNT = PRIVACY_SETTINGS.filter(s => s.risky).length;
 export default function PrivacyGame({ ctx }: { ctx: GameCtx }) {
   const { lang, t } = ctx;
   const [fixed, setFixed] = useState<Set<number>>(new Set());
+  const [safeOff, setSafeOff] = useState<Set<number>>(new Set());
   const [lesson, setLesson] = useState<number | null>(null);
   const [done, setDone] = useState(false);
   const finished = useRef(false);
 
-  const reset = () => { setFixed(new Set()); setLesson(null); setDone(false); finished.current = false; };
+  const reset = () => { setFixed(new Set()); setSafeOff(new Set()); setLesson(null); setDone(false); finished.current = false; };
 
   const tap = (i: number) => {
     const s = PRIVACY_SETTINGS[i];
     setLesson(i);
-    if (!s.risky || fixed.has(i) || done) return;
+    if (!s.risky) {
+      /* Safe settings toggle freely: switching one off is a mistake, not a fix,
+         and tapping again switches it back on. */
+      const nextOff = new Set(safeOff);
+      if (nextOff.has(i)) nextOff.delete(i); else nextOff.add(i);
+      setSafeOff(nextOff);
+      return;
+    }
+    if (fixed.has(i) || done) return;
     const next = new Set(fixed);
     next.add(i);
     setFixed(next);
@@ -50,20 +59,23 @@ export default function PrivacyGame({ ctx }: { ctx: GameCtx }) {
               </span>
             </div>
             <p className="mt-1 text-[16px] font-semibold text-white/75">
-              {pick(lang, "Red switches are risky and on. Tap one to lock it down.",
-                "အနီရောင် switch တွေက အန္တရာယ်ရှိပြီး ပွင့်နေတယ်။ တစ်ခုကို နှိပ်ပြီး လော့ခ်ချပါ။")}
+              {pick(lang, "Every switch is on. Read each setting, and switch off the ones that put you at risk.",
+                "Switch အကုန် ပွင့်နေတယ်။ setting တစ်ခုချင်းကို ဖတ်ပြီး အန္တရာယ်ရှိတာတွေကို ပိတ်ပါ။")}
             </p>
           </div>
           <div className="flex flex-col divide-y-[3px] divide-[#f1eef9] px-5 sm:px-8">
             {PRIVACY_SETTINGS.map((s, i) => {
               const isFixed = fixed.has(i);
-              const on = s.risky && !isFixed;
+              const isSafeOff = !s.risky && safeOff.has(i);
+              const on = !isFixed && !isSafeOff;
               return (
                 <div key={i} className="flex items-center gap-3 py-5 sm:gap-5">
                   <div className="min-w-0 flex-1">
                     <div className="text-[22px] font-black leading-tight">{pick(lang, s.nameEn, s.nameMy)}</div>
-                    <div className={`text-[17px] font-bold ${on ? "text-[#d33131]" : "text-[#46a302]"}`}>
-                      {isFixed || !s.risky ? pick(lang, s.fixEn, s.fixMy) : pick(lang, s.stateEn, s.stateMy)}
+                    <div className={`text-[17px] font-bold ${isFixed ? "text-[#46a302]" : "text-[#5b5872]"}`}>
+                      {isFixed ? pick(lang, s.fixEn, s.fixMy)
+                        : isSafeOff ? pick(lang, "Off", "ပိတ်ထားတယ်")
+                        : pick(lang, s.stateEn, s.stateMy)}
                       {isFixed ? " ✓" : ""}
                     </div>
                   </div>
