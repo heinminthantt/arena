@@ -58,7 +58,7 @@ export const T: Record<Lang, Record<string, string>> = {
     ask:"မေးဖြေ စကားပြော", quiz:"နောက်ဆုံး ပဟေဠိ", records:"မှတ်တမ်းများ",
     homeSub:"ဘယ်အပိုင်းကိုမဆို တိုက်ရိုက် သွားနိုင်ပါတယ်။ အစဉ်လိုက် လုပ်စရာ မလိုပါ။ ရမှတ်၊ အဖြေနဲ့ မှတ်တမ်း အားလုံးကို ဒီစက်ထဲမှာ သိမ်းထားပါတယ်။",
     scamSub:"ကျောင်းသားတွေက အနီနဲ့ အစိမ်း ကတ်နဲ့ အရင် မဲပေးပါ။ ပြီးမှ AI ကို မေးပါ။ AI ရဲ့ အဖြေ အမှန်နဲ့ ကိုက်မှ AI မှတ် ရပါမယ်။",
-    vaultSub:"အုပ်ထိန်းဘော့က စကားဝှက်အတု တစ်လုံး ကိုင်ထားပါတယ်။ လှည့်စားပြီး ပြောခိုင်းကြည့်ပါ။ အဆင့်တစ်ခုကို ၅ ကြိမ် ကြိုးစားနိုင်ပါတယ်။",
+    vaultSub:"Botက စကားဝှက်အတု တစ်လုံး ကိုင်ထားပါတယ်။ လှည့်စားပြီး ပြောခိုင်းကြည့်ပါ။ အဆင့်တစ်ခုကို ၅ ကြိမ် ကြိုးစားနိုင်ပါတယ်။",
     roastSub:"စကားဝှက်၏ခိုင်မာမှုကို ဒီစက်ပေါ်မှာပဲ စစ်ပါတယ်။ စကားဝှက်ကို ဘယ်ကိုမှ မပို့ပါ။",
     askSub:"ဆိုက်ဘာ လုံခြုံရေး သို့မဟုတ် အွန်လိုင်း ဘေးကင်းရေး မေးခွန်း မှန်သမျှ မေးပြီး ရိုးရှင်းတဲ့ အဖြေ ရယူပါ။",
     quizSub:"မေးခွန်း ၈ ခု။ API မလိုပါ။ အင်တာနက် မရှိလည်း ဒီအပိုင်း အမြဲ အလုပ်လုပ်ပါတယ်။",
@@ -228,7 +228,7 @@ export const VAULT_LESSONS: Record<number, { winEn: string; winMy: string; failE
 
 /* ---------- Password roast lines (demo) ---------- */
 export const ROASTS: Record<number, { en: string; my: string }> = {
-  0:{ en:"That password would fall over in a light breeze. A hacker needs about one second.", my:"အဲ့စကားဝှက်က လေတိုက်ရင်တောင် လဲမယ်။ ဟက်ကာအတွက် တစ်စက္ကန့်ပဲ လိုတယ်။" },
+  0:{ en:"That password would fall over in a light breeze. A hacker needs about one second.", my:"အဲ့စကားဝှက်က လွယ်ကူလွန်းတယ်။ ဟက်ကာအတွက် တစ်စက္ကန့်ပဲ လိုတယ်။" },
   1:{ en:"Weak. A name plus a year is the first thing attackers guess.", my:"အားနည်းတယ်။ နာမည်နဲ့ ခုနှစ်က တိုက်ခိုက်သူတွေ အရင် ခန့်မှန်းတာပဲ။" },
   2:{ en:"Getting warmer, but still guessable. Make it longer, not more complicated.", my:"နည်းနည်း တိုးတက်လာပြီ၊ ဒါပေမယ့် ခန့်မှန်းလို့ ရသေးတယ်။ ပိုရှုပ်အောင် မလုပ်နဲ့၊ ပိုရှည်အောင် လုပ်ပါ။" },
   3:{ en:"Solid. Length is doing the heavy lifting here. Add one more unrelated word to be safe.", my:"ကောင်းတယ်။ ရှည်တာက အဓိက အားပဲ။ မဆိုင်တဲ့ စကားလုံး တစ်လုံး ထပ်ထည့်ရင် ပိုလုံခြုံမယ်။" },
@@ -240,23 +240,23 @@ export const ROASTS: Record<number, { en: string; my: string }> = {
    of these when the API answers. */
 export const ROAST_EXTRAS: Record<number, { en: string; my: string }[]> = {
   0: [
-    { en: "A gentle breeze of guessing and this one is gone. Attackers keep lists of passwords exactly like this.", my: "ခန့်မှန်းလိုက်တာနဲ့ ပြုတ်ကျမယ့် စကားဝှက်ပဲ။ တိုက်ခိုက်သူတွေဆီမှာ ဒီလို စကားဝှက် စာရင်း အဆင်သင့် ရှိတယ်။" },
-    { en: "This is not a password, it is a welcome mat. It would be cracked before your tea cools.", my: "ဒါ စကားဝှက် မဟုတ်ဘူး၊ ကြိုဆိုတဲ့ ဖျာပဲ။ လက်ဖက်ရည် မအေးခင် ဖောက်ခံရမယ်။" },
+    { en: "A gentle breeze of guessing and this one is gone. Attackers keep lists of passwords exactly like this.", my: "ခန့်မှန်းလိုက်တာနဲ့ ပေါ်သွားမယ့် စကားဝှက်ပဲ။ တိုက်ခိုက်သူတွေဆီမှာ ဒီလို စကားဝှက် စာရင်း အဆင်သင့် ရှိတယ်။" },
+    { en: "This is not a password, it is a welcome mat. It would be cracked before your tea cools.", my: "ဒါက ခိုင်ခန့်စကားဝှက် မဟုတ်ဘူး။ လက်ဖက်ရည်တစ်ခွက် မအေးခင်မှာတောင် ဒီစကားဝှက်က ဖောက်ခံရမယ်။" },
   ],
   1: [
     { en: "One step above using 'password'. A birthday or a pet name is a gift to anyone who knows you.", my: "'password' သုံးတာထက် တစ်ဆင့်ပဲ သာတယ်။ မွေးနေ့ ဒါမှမဟုတ် အိမ်မွေးတိရစ္ဆာန် နာမည်က သင့်ကို သိတဲ့သူအတွက် လက်ဆောင်ပဲ။" },
-    { en: "Short and predictable. Attackers try names, years and keyboard walks first, and this has them all.", my: "တိုပြီး ခန့်မှန်းလွယ်တယ်။ တိုက်ခိုက်သူတွေက နာမည်၊ ခုနှစ်နဲ့ ကီးဘုတ် လမ်းကြောင်းတွေကို အရင် စမ်းတာပဲ၊ ဒီမှာ အကုန် ပါတယ်။" },
+    { en: "Short and predictable. Attackers try names, years and keyboard walks first, and this has them all.", my: "စကားဝှက်ကတိုပြီး ခန့်မှန်းလွယ်တယ်။ တိုက်ခိုက်သူတွေက နာမည်၊ ခုနှစ်နဲ့ keywordsတွေကို အရင် စမ်းကြည့်ကြတာပဲ၊ ဒီမှာ အဲ့ဒါတွေအကုန်ပါနေတယ်။" }
   ],
   2: [
-    { en: "Halfway there. It has some ingredients, but the recipe is a famous one.", my: "တစ်ဝက်တော့ ရောက်ပြီ။ ပါဝင်ပစ္စည်း နည်းနည်း ရှိပေမယ့် ချက်နည်းက နာမည်ကြီး နည်းပဲ။" },
-    { en: "Not terrible, not safe. A few more unrelated words would change its life.", my: "အရမ်း မဆိုး၊ ဒါပေမယ့် မလုံခြုံသေး။ မဆိုင်တဲ့ စကားလုံး နည်းနည်း ထပ်ထည့်ရင် သူ့ ဘဝ ပြောင်းသွားမယ်။" },
+    { en: "Halfway there. It has some ingredients, but the recipe is a famous one.", my: "တစ်ဝက်တော့ ရောက်ပြီ။ ပါဝင်ပစ္စည်း နည်းနည်း ရှိပေမယ့် ချက်ပြုတ်နည်းကသာ အရေးအကြီးဆုံးပဲ။" },
+    { en: "Not terrible, not safe. A few more unrelated words would change its life.", my: "အရမ်း မဆိုး၊ ဒါပေမယ့် မလုံခြုံသေး။ မဆိုင်တဲ့ စကားလုံး နည်းနည်း ထပ်ထည့်ရင်ပိုကောင်းသွားမယ်။"},
   ],
   3: [
-    { en: "Strong bones. One more random word and even patient attackers give up.", my: "အရိုး ခိုင်တယ်။ ကျပန်း စကားလုံး တစ်လုံး ထပ်ထည့်ရင် စိတ်ရှည်တဲ့ တိုက်ခိုက်သူတောင် လက်လျှော့မယ်။" },
+    { en: "Strong bones. One more random word and even patient attackers give up.", my: "strongဖြစ်လာပြီ။ ကျပန်း စကားလုံး တစ်လုံး ထပ်ထည့်ရင် စိတ်ရှည်တဲ့ တိုက်ခိုက်သူတောင် လက်လျှော့သွားလိမ့်မယ်။" },
     { en: "This one makes attackers work for a living. Keep this pattern, never reuse it elsewhere.", my: "ဒီတစ်ခုက တိုက်ခိုက်သူတွေကို အလုပ် လုပ်ခိုင်းတယ်။ ဒီပုံစံကို ထိန်းထားပါ၊ တခြားနေရာမှာ ပြန်မသုံးပါနဲ့။" },
   ],
   4: [
-    { en: "A passphrase with a plot twist. Long, odd, easy for you, miserable for a machine.", my: "ဇာတ်လမ်း အလှည့်အပြောင်း ပါတဲ့ စကားစု။ ရှည်တယ်၊ ထူးဆန်းတယ်၊ သင့်အတွက် လွယ်တယ်၊ စက်အတွက် ငရဲပဲ။" },
+    { en: "A passphrase with a plot twist. Long, odd, easy for you, miserable for a machine.", my: "ဇာတ်လမ်း အလှည့်အပြောင်း ပါတဲ့ စကားစု။ ရှည်တယ်၊ ထူးဆန်းတယ်၊ သင့်အတွက် လွယ်တယ်၊ စက်အတွက်‌တော့ခက်ခဲတယ်။" },
     { en: "Textbook fortress. If every account had one of these, password attacks would be a history lesson.", my: "စာအုပ်ထဲက ခံတပ် အတိုင်းပဲ။ အကောင့်တိုင်းမှာ ဒီလို တစ်ခုစီ ရှိရင် စကားဝှက် တိုက်ခိုက်မှုက သမိုင်း သင်ခန်းစာ ဖြစ်သွားမယ်။" },
   ],
 };
@@ -266,12 +266,12 @@ export const ROAST_EXTRAS: Record<number, { en: string; my: string }[]> = {
 export const ROAST_TIPS: Record<number, { en: string; my: string }[]> = {
   0: [
     { en: "Tip: start over with 4 unrelated words, like a tiny story only you would invent. Length beats clever symbols.", my: "အကြံပြုချက်: အသစ်က ပြန်စပါ။ မဆိုင်တဲ့ စကားလုံး ၄ လုံးကို သင်ပဲ ဖန်တီးတဲ့ ဇာတ်လမ်းလေးလို ဆက်သုံးပါ။ ရှည်တာက ရှုပ်တာထက် ပိုကောင်းတယ်။" },
-    { en: "Tip: never use birthdays, names, or keyboard walks like 123456. They are the first guesses every attacker tries.", my: "အကြံပြုချက်: မွေးနေ့၊ နာမည်နဲ့ 123456 လို ကီးဘုတ် လမ်းကြောင်းတွေ ဘယ်တော့မှ မသုံးပါနဲ့။ တိုက်ခိုက်သူတိုင်း အရင်ဆုံး စမ်းတာတွေပဲ။" },
-    { en: "Tip: make it at least 12 characters. Four short random words beat one short clever word every time.", my: "အကြံပြုချက်: အနည်းဆုံး ၁၂ လုံး ရှိအောင် လုပ်ပါ။ ကျပန်း စကားလုံး တိုတို ၄ လုံးက ပါးနပ်တဲ့ စကားလုံး တစ်လုံးထက် အမြဲ သာတယ်။" },
+    { en: "Tip: never use birthdays, names, or keyboard walks like 123456. They are the first guesses every attacker tries.", my: "အကြံပြုချက်: မွေးနေ့၊ နာမည်နဲ့ 123456 လို keywordsတွေ ဘယ်တော့မှ မသုံးပါနဲ့။ တိုက်ခိုက်သူတိုင်း အရင်ဆုံး စမ်းတာအဲ့ဒါတွေပဲ။" },
+    { en: "Tip: make it at least 12 characters. Four short random words beat one short clever word every time.", my: "အကြံပြုချက်: အနည်းဆုံး ၁၂ လုံး ရှိအောင် လုပ်ပါ။ ကျပန်း စကားလုံး တိုတို ၄ လုံးက စကားလုံး တစ်လုံးထက် အမြဲ သာတယ်။" },
   ],
   1: [
-    { en: "Tip: add two more unrelated words and a number in the middle. You are one good idea away from strong.", my: "အကြံပြုချက်: မဆိုင်တဲ့ စကားလုံး ၂ လုံး ထပ်ထည့်ပြီး အလယ်မှာ နံပါတ် တစ်ခု ထည့်ပါ။ ခိုင်မာဖို့ အကြံကောင်း တစ်ခု လိုနေတာပဲ။" },
-    { en: "Tip: swap the predictable parts. A year or a pet name at the end is the first thing attackers append too.", my: "အကြံပြုချက်: ခန့်မှန်းလွယ်တဲ့ အပိုင်းတွေ လဲပါ။ နောက်ဆုံးမှာ ခုနှစ် ဒါမှမဟုတ် အိမ်မွေးတိရစ္ဆာန် နာမည် ထည့်တာကို တိုက်ခိုက်သူတွေလည်း အရင် စမ်းတယ်။" },
+    { en: "Tip: add two more unrelated words and a number in the middle. You are one good idea away from strong.", my: "အကြံပြုချက်: မဆိုင်တဲ့ စကားလုံး ၂ လုံး ထပ်ထည့်ပြီး အလယ်မှာ နံပါတ် တစ်ခု ထည့်ပါ။ သင်ကသင့်စကားဝှက် ခိုင်မာဖို့ အကြံကောင်း တစ်ခု လိုနေတာပဲ။" },
+    { en: "Tip: swap the predictable parts. A year or a pet name at the end is the first thing attackers append too.", my: "အကြံပြုချက်: ခန့်မှန်းလွယ်တဲ့ အပိုင်းတွေ လဲပါ။ နောက်ဆုံးမှာ ခုနှစ် ဒါမှမဟုတ် အိမ်မွေးတိရစ္ဆာန် နာမည် ထည့်တာကို တိုက်ခိုက်သူတွေလည်း အရင် စမ်းကြည့်ကြတယ်။" },
     { en: "Tip: length first. Doubling the length helps far more than adding one symbol.", my: "အကြံပြုချက်: အရှည်ကို အရင် ဦးစားပေးပါ။ အရှည် နှစ်ဆ ဖြစ်တာက သင်္ကေတ တစ်ခု ထပ်ထည့်တာထက် အများကြီး ပိုကူညီတယ်။" },
   ],
   2: [
@@ -280,7 +280,7 @@ export const ROAST_TIPS: Record<number, { en: string; my: string }[]> = {
     { en: "Tip: add one word that makes no sense at all. Random is what machines cannot guess.", my: "အကြံပြုချက်: လုံးဝ အဓိပ္ပာယ် မရှိတဲ့ စကားလုံး တစ်လုံး ထည့်ပါ။ ကျပန်းဆိုတာ စက်တွေ ခန့်မှန်းလို့ မရတဲ့ အရာပဲ။" },
   ],
   3: [
-    { en: "Tip: one more unrelated word and this becomes a fortress. Then never reuse it on another account.", my: "အကြံပြုချက်: မဆိုင်တဲ့ စကားလုံး တစ်လုံး ထပ်ထည့်ရင် ခံတပ် ဖြစ်သွားမယ်။ ပြီးရင် တခြား အကောင့်မှာ ပြန်မသုံးပါနဲ့။" },
+    { en: "Tip: one more unrelated word and this becomes a fortress. Then never reuse it on another account.", my: "အကြံပြုချက်: မဆိုင်တဲ့ စကားလုံး တစ်လုံး ထပ်ထည့်ရင် တိုက်ခိုက်ရခက်တဲ့ခံတပ်တစ်ခု ဖြစ်သွားမယ်။ ပြီးရင် တခြား အကောင့်မှာ ပြန်မသုံးပါနဲ့။" },
     { en: "Tip: keep this pattern, and turn on MFA so even a stolen password is not enough on its own.", my: "အကြံပြုချက်: ဒီပုံစံကို ထိန်းထားပြီး MFA ဖွင့်ပါ။ စကားဝှက် ခိုးခံရရင်တောင် သူ့ချည်း မလုံလောက်အောင်လို့ပါ။" },
     { en: "Tip: store it in a password manager instead of your memory, then every account can have its own.", my: "အကြံပြုချက်: မှတ်ဉာဏ်ထဲ မထားဘဲ password manager ထဲ သိမ်းပါ။ ဒါဆို အကောင့်တိုင်းမှာ ကိုယ်ပိုင် တစ်ခုစီ ရှိနိုင်တယ်။" },
   ],
@@ -299,7 +299,7 @@ export function askAnswer(q: string, lang: Lang): string {
     ? "အဲ့ဒါကို ကျွန်တော် မကူညီနိုင်ပါ။ ဒါပေမယ့် ကာကွယ်နည်းကို ပြောပြနိုင်တယ်: Password ခိုင်ခိုင်ထားပါ၊ 2FA ဖွင့်ပါ၊ မသိတဲ့ လင့်ခ် မနှိပ်ပါနဲ့။"
     : "I cannot help with that. But I can teach the defense: use a strong passphrase, turn on 2FA, and never click unknown links.";
   if (s.includes("password") || s.includes("စကားဝှက်")) return lang === "my"
-    ? "အရင်ဆုံး သန့်ရှင်းတဲ့ စက်ကနေ Password ပြောင်းပါ။ ပြီးရင် 2FA ဖွင့်ပါ။ နောက်ဆုံး တခြား session အားလုံး log out လုပ်ပါ။"
+    ? "အရင်ဆုံး စိတ်ချရတဲ့ စက်ကနေ Password ပြောင်းပါ။ ပြီးရင် 2FA ဖွင့်ပါ။ နောက်ဆုံး တခြား session အားလုံး log out လုပ်ပါ။"
     : "First, change the password from a clean device. Second, turn on two-factor authentication. Third, log out all other sessions.";
   if (s.includes("phishing") || s.includes("scam") || s.includes("လိမ်လည်")) return lang === "my"
     ? "Phishing ဆိုတာ သင့် Password ဒါမှမဟုတ် ငွေကို လှည့်ပြီး ယူဖို့ လုပ်ထားတဲ့ မက်ဆေ့ အတု ဒါမှမဟုတ် Login စာမျက်နှာ အတုပါ။"
@@ -343,7 +343,7 @@ interface MockPayload {
 const DEBRIEF_FALLBACK: Record<string, { en: string; my: string }> = {
   rush: {
     en: "Speed hides the same three tells: prizes you never entered, codes or PINs, and pay-first jobs. Next run, scan for those before you tap.",
-    my: "အမြန်နှုန်းက လက္ခဏာ ၃ ခုကို ဖုံးထားတယ်: မဝင်ဖူးတဲ့ ဆု၊ ကုဒ် ဒါမှမဟုတ် PIN၊ အရင် ငွေသွင်းရတဲ့ အလုပ်။ နောက်တစ်ခါ မနှိပ်ခင် ဒီ ၃ ခုကို အရင် ရှာပါ။",
+    my: "အမြန်နှုန်းက လက္ခဏာ ၃ ခုကို ဖုံးထားတယ်: မပြိုင်ဖူးဘဲရတဲ့ ဆု၊ ကုဒ် ဒါမှမဟုတ် PIN၊ အရင် ငွေသွင်းရတဲ့ အလုပ်။ နောက်တစ်ခါ မနှိပ်ခင် ဒီ ၃ ခုကို အရင် ရှာပါ။",
   },
   link: {
     en: "Read the domain from the right: the last two labels are the real owner. Extra words before them, zeros for letters, or a familiar name inside another domain means fake.",
@@ -351,7 +351,7 @@ const DEBRIEF_FALLBACK: Record<string, { en: string; my: string }> = {
   },
   privacy: {
     en: "The risky settings were profile visibility, location, phone number, photo tags and unknown app installs. Check those five on a real phone tonight.",
-    my: "အန္တရာယ်ရှိတဲ့ setting တွေက profile မြင်နိုင်မှု၊ တည်နေရာ၊ ဖုန်းနံပါတ်၊ ဓာတ်ပုံ tag နဲ့ မသိတဲ့ နေရာက app သွင်းခွင့် ပဲ။ ဒီ ၅ ခုကို ဒီည ဖုန်းအစစ်မှာ စစ်ပါ။",
+    my: "အန္တရာယ်ရှိတဲ့ setting တွေက profile မြင်နိုင်မှု၊ တည်နေရာ၊ ဖုန်းနံပါတ်၊ ဓာတ်ပုံ tag နဲ့ မသိတဲ့ နေရာက app သွင်းခွင့် ပဲ။ ဒီ ၅ ခုကို ဒီည သင့်ဖုန်းမှာ စစ်ကြည့်ပါ။",
   },
   permission: {
     en: "Ask one question: does this app need that permission to do its job? A flashlight needs light, not your contacts.",
@@ -375,7 +375,7 @@ const DEBRIEF_FALLBACK: Record<string, { en: string; my: string }> = {
   },
   boss: {
     en: "Every boss wave is a game you already played. Replay the one that cracked your shield, then come back.",
-    my: "Boss ရဲ့ လှိုင်းတိုင်းက သင် ကစားပြီးသား ဂိမ်းတွေပဲ။ ဒိုင်း အက်သွားတဲ့ ဂိမ်းကို ပြန် လေ့ကျင့်ပြီး ပြန်လာပါ။",
+    my: "Boss ရဲ့ waveတိုင်းက သင် ကစားပြီးသား ဂိမ်းတွေပဲ။ ရှုံးသွားတဲ့ ဂိမ်းကို ပြန် လေ့ကျင့်ပြီး ပြန်လာပါ။",
   },
   generic: {
     en: "Review the tells you missed and replay the round. The habit matters more than the score.",
@@ -649,9 +649,9 @@ export const BADGES: BadgeDef[] = [
   { id: "first-catch", icon: "🎣", en: "First Catch", my: "First Catch",
     descEn: "First correct Scam or Safe call by the class", descMy: "အတန်းက ပထမဆုံး မှန်အောင် ခေါ်နိုင်တာ" },
   { id: "sharp-eye", icon: "👁️", en: "Sharp Eye", my: "Sharp Eye",
-    descEn: "All 6 scam cards judged correctly", descMy: "လိမ်ကတ် ၆ ကတ်လုံး မှန်အောင် ဆုံးဖြတ်နိုင်တာ" },
+    descEn: "All 6 scam cards judged correctly", descMy: "အလိမ်အညာကတ် ၆ ကတ်လုံး မှန်အောင် ဆုံးဖြတ်နိုင်တာ" },
   { id: "bot-breaker", icon: "🤖", en: "Bot Breaker", my: "Bot Breaker",
-    descEn: "All 3 Hack the Bot levels cleared", descMy: "ဘော့ အဆင့် ၃ ဆင့်လုံး နိုင်တာ" },
+    descEn: "All 3 Hack the Bot levels cleared", descMy: "Bot အဆင့် ၃ ဆင့်လုံး နိုင်တာ" },
   { id: "password-pro", icon: "🔑", en: "Password Pro", my: "Password Pro",
     descEn: "A roast result in the top strength band (4/4)", descMy: "Roast မှာ အမြင့်ဆုံး အဆင့် (4/4) ရတာ" },
   { id: "quiz-master", icon: "🏆", en: "Quiz Master", my: "Quiz Master",
@@ -659,13 +659,13 @@ export const BADGES: BadgeDef[] = [
   { id: "full-journey", icon: "🗺️", en: "Full Journey", my: "Full Journey",
     descEn: "Every section on the trail attempted", descMy: "လမ်းကြောင်းက အပိုင်းတိုင်းကို စမ်းဖူးတာ" },
   { id: "rush-star", icon: "⚡", en: "Rush Star", my: "Rush Star",
-    descEn: "Clear Phishing Inbox Rush", descMy: "လိမ်မက်ဆေ့ အမြန်ဖမ်း ပြီးအောင် ဆော့တာ" },
+    descEn: "Clear Phishing Inbox Rush", descMy: "အလိမ်အညာမက်ဆေ့ အမြန်ဖမ်း ပြီးအောင် ဆော့တာ" },
   { id: "link-detective", icon: "🔍", en: "Link Detective", my: "Link Detective",
     descEn: "Clear Link Detective", descMy: "လင့်ခ် စုံထောက် ပြီးအောင် ဆော့တာ" },
   { id: "privacy-guard", icon: "🔒", en: "Privacy Guard", my: "Privacy Guard",
     descEn: "Clear Privacy Lockdown", descMy: "Privacy လော့ခ် အကုန် ချတာ" },
   { id: "call-blocker", icon: "📞", en: "Call Blocker", my: "Call Blocker",
-    descEn: "Expose the scammer in Scam Call Live", descMy: "လိမ်ဖုန်းခေါ်မှုမှာ လူလိမ်ကို ဖော်ထုတ်တာ" },
+    descEn: "Expose the scammer in Scam Call Live", descMy: "လိမ်လည်ဖုန်းခေါ်မှုမှာ လူလိမ်ကို ဖော်ထုတ်တာ" },
   { id: "permission-pro", icon: "✅", en: "Permission Pro", my: "Permission Pro",
     descEn: "Clear Permission Panic", descMy: "Permission အမြန်ဆုံးဖြတ် ပြီးအောင် ဆော့တာ" },
   { id: "eagle-eye", icon: "🦅", en: "Eagle Eye", my: "Eagle Eye",
